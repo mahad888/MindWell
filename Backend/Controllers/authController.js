@@ -1,15 +1,18 @@
-import Paitent from "../Schemas/PaitentSchema.js";
-import Doctor from "../Schemas/DoctorSchema.js";
+import Paitent from "../Models/PaitentSchema.js";
+import Doctor from "../Models/DoctorSchema.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import sendEmail from '../Middleware/EmailSender.js';
+import { uploadFilesToCloudinary} from "../utils/features.js";
 
 export const register = async (req, res) => {
   const { email, password, name, role, gender } = req.body;
-  const photo = req.file ? req.file.filename : null;
+  const file = req.file;
 
   try {
     let user = null;
+
+    // Check if the user already exists based on the role
     if (role === "patient") {
       user = await Paitent.findOne({ email });
     } else if (role === "doctor") {
@@ -20,8 +23,29 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    if (!file) {
+      return res.status(401).json({ status: false, message: "Please upload avatar" });
+    }
+
+    // Upload the file to Cloudinary and handle potential errors
+    const result = await uploadFilesToCloudinary([file]);
+    console.log(result)
+
+    // Check if the result is valid and contains the necessary properties
+    if (!result || !result[0] || !result[0].public_id || !result[0].url) {
+      return res.status(500).json({ status: false, message: "Failed to upload avatar" });
+    }
+
+    // Construct the avatar object
+    const avatar = {
+      public_id: result[0].public_id,
+      url: result[0].url,
+    };
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    // Create a new user based on the role
     if (role === "patient") {
       user = new Paitent({
         email,
@@ -29,7 +53,8 @@ export const register = async (req, res) => {
         name,
         role,
         gender,
-        photo,
+        avatar,
+        viewedProfile:Math.floor(Math.random() * 10000),
       });
     } else if (role === "doctor") {
       user = new Doctor({
@@ -38,16 +63,19 @@ export const register = async (req, res) => {
         name,
         role,
         gender,
-        photo,
+        avatar,
       });
     }
 
+    // Save the user
     await user.save();
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
 
 export const login = async (req, res) => {
     try {
@@ -77,8 +105,8 @@ export const login = async (req, res) => {
       const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET_key, {
         expiresIn: '15d',
       });
-      const { password: userPassword, role, appointments, ...rest } = user._doc;
-        res.status(200).json({ status:'true',messsage: "User logged in successfully",token, data: { ...rest},role });
+      const { password: userPassword, appointments, ...rest } = user._doc;
+        res.status(200).json({ status:'true',message: "User logged in successfully",token, user: { ...rest}});
     } catch (error) {
       console.log(error);
       res.status(500).json({status:false, message: "Failed to login" });

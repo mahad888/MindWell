@@ -21,6 +21,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import image from "../assets/images/login.jpg";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
   const name = useInputValidation("", nameValidator);
@@ -50,15 +51,19 @@ const SignUp = () => {
       formData.append("name", name.value);
       formData.append("bio", bio.value);
       formData.append("role", role.value);
-      formData.append("photo", avatar.file);
+      formData.append("avatar", avatar.file);
       formData.append("gender", gender.value);
+      
 
       const response = await axios.post("http://localhost:5000/api/v1/auth/register", formData, {
+        withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
+      toast.success(response.data.message);
       navigate("/login");
       console.log(response.data);
     } catch (error) {
+      toast.error(error?.response?.data?.message || "Registration failed. Please try again.");
       console.error("Registration error:", error);
     }
   };
@@ -87,7 +92,7 @@ const SignUp = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            mt:-10,
+            mt: -10,
             mb: 2,
             ml: 2,
             width: "100%",
@@ -96,7 +101,11 @@ const SignUp = () => {
           <img src={logo} alt="MindWell" style={{ width: 200, height: 100 }} />
         </Box>
 
-        <img src={image} alt="MindWell" style={{ width: "100%", height: "500px", opacity: 1, marginLeft: '50px', borderRadius: '40px' }} />
+        <img
+          src={image}
+          alt="MindWell"
+          style={{ width: "100%", height: "500px", opacity: 1, marginLeft: '50px', borderRadius: '40px' }}
+        />
       </Grid>
       <Grid
         item
@@ -165,8 +174,8 @@ const SignUp = () => {
                 variant="outlined"
                 value={name.value}
                 onChange={name.changeHandler}
-                error={name.error}
-                helperText={name.error}
+                error={!!name.error}
+                helperText={name.error || ""}
               />
               <TextField
                 required
@@ -176,52 +185,54 @@ const SignUp = () => {
                 variant="outlined"
                 value={email.value}
                 onChange={email.changeHandler}
-                error={email.error}
-                helperText={email.error}
+                error={!!email.error}  
+                helperText={email.error || ""}
               />
-              <Stack direction={'row'} spacing={1} margin="auto">
-              <TextField
-                required
-                fullWidth
-                label="Password"
-                margin="normal"
-                variant="outlined"
-                type={showPassword ? "text" : "password"}
-                value={password.value}
-                onChange={password.changeHandler}
-                error={password.error}
-                helperText={password.error}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handlePasswordVisibilityToggle} edge="end">
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              
-              <TextField
-                required
-                fullWidth
-                label="Confirm Password"
-                margin="normal"
-                variant="outlined"
-                type="password"
-                value={confirmPassword.value}
-                onChange={confirmPassword.changeHandler}
-                error={confirmPassword.error}
-                helperText={confirmPassword.error}
-              />
+              <Stack direction={"row"} spacing={1} margin="auto">
+                <TextField
+                  required
+                  fullWidth
+                  label="Password"
+                  margin="normal"
+                  variant="outlined"
+                  type={showPassword ? "text" : "password"}
+                  value={password.value}
+                  onChange={password.changeHandler}
+                  error={!!password.error}  
+                  helperText={password.error || ""}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handlePasswordVisibilityToggle} edge="end">
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  required
+                  fullWidth
+                  label="Confirm Password"
+                  margin="normal"
+                  variant="outlined"
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword.value}
+                  onChange={confirmPassword.changeHandler}
+                  error={!!confirmPassword.error}  
+                  helperText={confirmPassword.error || ""}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handlePasswordVisibilityToggle} edge="end">
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </Stack>
-              
-              <Stack direction="row" spacing={1} margin="auto"
-              sx={
-                {
-                  margin:2
-                }
-              }>
+              <Stack direction="row" spacing={1} margin="auto" sx={{ margin: 2 }}>
                 <TextField
                   select
                   required
@@ -255,7 +266,15 @@ const SignUp = () => {
                 fullWidth
                 color="primary"
                 type="submit"
-                sx={{ marginTop: 2, backgroundColor:'#4C7E80',fontSize:'16px', height:'50px', color:'white', padding: '10px 20px', borderRadius: '20px'}}
+                sx={{
+                  marginTop: 2,
+                  backgroundColor: '#4C7E80',
+                  fontSize: '16px',
+                  height: '50px',
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '20px',
+                }}
               >
                 Register
               </Button>

@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
-import Doctor from '../Schemas/DoctorSchema.js';
-import Patient from '../Schemas/PaitentSchema.js';
+import Doctor from '../Models/DoctorSchema.js';
+import Patient from '../Models/PaitentSchema.js';
 
 export const authenticate = async (req, res, next) => {
+     console.log('Authenticating User');
     const authHeader = req.headers.authorization;
     console.log('Authorization Header:', authHeader);
 
@@ -30,8 +31,8 @@ export const authenticate = async (req, res, next) => {
 export const restrict = roles => async (req, res, next) => {
     const userId = req.userId;
     let user ;
-    const patient = await Patient.findbyId(userId);
-    const doctor = await Doctor.findbyId(userId);
+    const patient = await Patient.findById(userId);
+    const doctor = await Doctor.findById(userId);
 
     if(patient){
         user = patient;

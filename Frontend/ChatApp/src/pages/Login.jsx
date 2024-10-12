@@ -18,34 +18,54 @@ import axios from "axios";
 import { emailValidator, passwordValidator } from "../utils/validators";
 import image from "../assets/images/login.jpg";
 import logo from "../assets/images/logo.png";
+import { useDispatch } from "react-redux";
+import { setRole, userExist } from "../Redux/reducers/auth";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const email = useInputValidation("", emailValidator);
   const password = useInputValidation("", passwordValidator);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/v1/auth/login", {
+      const { data } = await axios.post("http://localhost:5000/api/v1/auth/login", {
         email: email.value,
         password: password.value,
+      }, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      if (response.data.status) {
-        console.log(response.data)
-        console.log(response.data.token)
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        alert("User logged in successfully");
-        navigate("/dashboard"); 
+      if (data.status) {
+        localStorage.setItem("auth", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        dispatch(userExist(data.user));
+        dispatch(setRole(data.role));
+        toast.success(data.message);
+        console.log('reaching dashboard')
+
+        if(data.role==="doctor"){
+          console.log(data.role)
+          navigate("/doctor/dashboard");
+        }
+        else if (data.role==="patient"){
+          navigate("/dashboard");
+        }
+        
+        
       } else {
-        alert("Login failed. Please try again.");
+        toast.error(data.message || "Login failed. Please try again.");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login failed. Please try again.");
+      toast.error(error?.response?.data?.message || "Login failed. Please try again.");
     }
   };
 
@@ -57,10 +77,10 @@ const Login = () => {
     <Grid container spacing={0} sx={{ height: "100vh" }}>
       <Grid
         item
-        xs={12}
         md={6}
+        display={{ xs: 'none', sm: "none", md: "block" }}
+        paddingTop={5}
         sx={{
-          display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
@@ -75,17 +95,18 @@ const Login = () => {
             display: "flex",
             flexDirection: "column",
             width: "100%",
-            padding: 2,
+            padding: -5,
             position: 'absolute',
-            top:25,
-            marginBottom:"20px",
-            mt:-3
-            
+            top: 25,
+            marginBottom: "20px",
+            mt: -3,
           }}
         >
           <img src={logo} alt="MindWell" style={{ width: 200, height: 100 }} />
         </Box>
-        <img src={image} alt="MindWell" style={{ width: "100%", height: "500px", borderRadius:'40px' }} />
+        <Box spacing={1} paddingTop={5}>
+          <img src={image} alt="MindWell" style={{ width: "100%", height: "500px", borderRadius: '40px' }} />
+        </Box>
       </Grid>
       <Grid
         item
@@ -101,7 +122,7 @@ const Login = () => {
             alignItems: "center",
             justifyContent: "center",
             borderRadius: "20px",
-            height: "100%", 
+            height: "100%",
           }}
         >
           <Paper
@@ -151,7 +172,7 @@ const Login = () => {
                 variant="contained"
                 fullWidth
                 type="submit"
-                sx={{ marginTop: 2, backgroundColor:'#4C7E80',fontSize:'16px', height:'50px', color:'white', padding: '10px 20px', borderRadius: '20px'}}
+                sx={{ marginTop: 2, backgroundColor: '#4C7E80', fontSize: '16px', height: '50px', color: 'white', padding: '10px 20px', borderRadius: '20px' }}
               >
                 Login
               </Button>
@@ -165,12 +186,12 @@ const Login = () => {
                     style={{ width: 20, height: 20 }}
                   />
                 }
-                sx={{ marginTop: 2  ,height:'50px', color:'black' ,padding: '10px 20px', borderRadius: '20px'}}
+                sx={{ marginTop: 2, height: '50px', color: 'black', padding: '10px 20px', borderRadius: '20px' }}
                 onClick={() => alert("Google login not implemented yet")}
               >
                 Continue with Google
               </Button>
-              <Typography textAlign="center" marginTop={1} >
+              <Typography textAlign="center" marginTop={1}>
                 <Link href="/forgetPassword" underline="hover" color={"black"}>
                   Forgot Password?
                 </Link>

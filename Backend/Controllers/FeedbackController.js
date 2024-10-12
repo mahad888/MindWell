@@ -1,13 +1,12 @@
-import  Feedback from '../Schemas/systemFeedback.js';
+import  Feedback from '../Models/systemFeedback.js';
 
 export const submitFeedback = async (req, res) => {
     const {ratings, comments } = req.body;
     console.log(req.body)
-    const userId = '6643e899131f7b2031ffd8c0'
 
     try {
         const feedback = new Feedback({
-            userId,
+            user:req.userId,
             ratings,
             comments,
         });
@@ -21,3 +20,5 @@ export const submitFeedback = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+

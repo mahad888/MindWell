@@ -1,21 +1,31 @@
 import express from 'express';
 
-import { updatePatient,deletePatient,getPatient,getAllPatients } from "../Controllers/PatientController.js";
+import { updatePatient,deletePatient,getPatient,getAllPatients, searchPatient, sendFriendRequest, acceptFriendRequest, getMyNotifications, getAllFriends, getUserFriends, addRemoveFriend } from "../Controllers/PatientController.js";
 import { updateDoctor,deleteDoctor,getDoctor,getAllDoctors } from "../Controllers/DoctorController.js";
 import { authenticate, restrict } from '../Authentications/verifyToken.js';
+import { acceptRequestValidator, sendRequestValidator, validateHandler } from '../lib/validators.js';
+import { upload } from '../Middleware/multer.js';
 
 
 const router = express.Router();
+router.use(authenticate)
+router.get('/get/myprofile',restrict(['patient']), getPatient);
+router.get('/getAllPatients',restrict(['admin']), getAllPatients);
+router.put('/updatePatient',upload,restrict(['patient']), updatePatient);
+router.delete('/deletePatient/:id',restrict(['patient']), deletePatient);
+router.get('/searchPatient',restrict(['patient']), searchPatient);
+router.put('/send/request',sendRequestValidator(),validateHandler,restrict(['patient']), sendFriendRequest);
+router.put('/accept/request',acceptRequestValidator(),validateHandler,restrict(['patient']), acceptFriendRequest);
+router.get('/get/notifications', restrict(['patient']), getMyNotifications);
+router.get('/get/friends', restrict(['patient']), getAllFriends);
+router.get("/:id/friends", restrict(["patient"]), getUserFriends);
+router.patch("/:id/:friendId",restrict(["patient"]), addRemoveFriend);
+router.get('/getAllDoctors',restrict(['patient']), getAllDoctors);
 
-router.get('/getPatient/:id',authenticate,restrict(['patient']), getPatient);
-router.get('/getAllPatients',authenticate,restrict(['admin']), getAllPatients);
-router.put('/updatePatient/:id',authenticate,restrict(['patient']), updatePatient);
-router.delete('/deletePatient/:id',authenticate,restrict(['patient']), deletePatient);
 
-router.get('/getDoctor/:id',authenticate,restrict(['doctor']), getDoctor);
-router.get('/getAllDoctors',authenticate,restrict(['doctor']), getAllDoctors);
-router.put('/updateDoctor/:id',authenticate,restrict(['doctor']), updateDoctor);
-router.delete('/deleteDoctor/:id',authenticate,restrict(['doctor']), deleteDoctor);
+router.get('/getDoctor/:id', getDoctor);
+router.put('/updateDoctor',upload,restrict(['doctor']),updateDoctor);
+router.delete('/deleteDoctor/:id',restrict(['doctor']), deleteDoctor);
 
 
 export default router;

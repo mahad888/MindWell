@@ -2,7 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 
 const Title = ({
-  title = "Chat App",
+  title = "MindWell",
   description = "This is a chat application for MindWell app",
 }) => {
   return <Helmet>  
