@@ -39,6 +39,7 @@
     "nodemon": "^3.1.0",
     "openai": "^4.47.1",
     "socket.io": "^4.7.5",
+    "stripe": "^17.2.0",
     "transformers": "^3.1.0",
     "uuid": "^10.0.0"
   }

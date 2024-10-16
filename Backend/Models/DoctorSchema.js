@@ -12,7 +12,9 @@ const DoctorSchema = new mongoose.Schema({
   required: true,
     }
   },
-  apppointmentFee: { type: Number },
+  apppointmentFee: { type: Number,
+    default: 1000
+   },
   role: { type: String },
 
   specialization: { type: Object },

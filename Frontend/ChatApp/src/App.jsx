@@ -63,6 +63,8 @@ import BreathingAudio from "./pages/Interactive Exercises/breathing_audio.jsx";
 import BreathingVideo from "./pages/Interactive Exercises/breathing_video.jsx";
 import BreathingExercisePage from "./pages/Interactive Exercises/breathing_exercise.jsx";
 import JournalingPromptsPage from "./pages/Interactive Exercises/journaling_prompts.jsx";
+import VideoCounselling from "./pages/Remote Counselling/VideoCounselling.jsx";
+import VideoCallRoom from "./pages/Remote Counselling/VideoCallRoom.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -147,6 +149,8 @@ export default function App() {
             <Route path = "/breathing_exercises" element = {<BreathingExercisePage/>}/>
             <Route path = "/breathing_audio" element = {<BreathingAudio/>}/>
             <Route path = "/breathing_video" element = {<BreathingVideo/>}/>
+            <Route path = '/video-counselling' element = {<VideoCounselling/>}/>
+            <Route path = "/room/:roomId" element = {<VideoCallRoom/>}/>
             <Route path = "/journaling_prompts" element = {<JournalingPromptsPage/>}/>
             <Route path = 'assessment' element = {<Survey/>}/>
             <Route path = 'results' element = {<Results/>}/>

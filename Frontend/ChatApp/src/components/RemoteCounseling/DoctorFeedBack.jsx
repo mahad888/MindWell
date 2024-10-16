@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Rating, TextField, Button, Stack, Paper, Avatar, List, ListItem, ListItemAvatar, Divider } from '@mui/material';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFeedback } from '../../Redux/reducers/auth';
 
 const DoctorFeedback = ({ doctor }) => {
   const [reviews, setReviews] = useState([]); // Initialize with an empty array
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [displayReviews, setDisplayReviews] = useState(false);
+  const {user} = useSelector(state=>state.auth)
+  const dispatch = useDispatch();
+
 
   const token = localStorage.getItem('auth');
   const doctorId = doctor._id;
@@ -22,7 +27,8 @@ const DoctorFeedback = ({ doctor }) => {
 
         if (response.status === 200) {
           setReviews(response?.data.feedback || []);  // Set reviews or default to empty array
-          console.log(response?.data.feedback);
+          dispatch(setFeedback(response?.data || []));
+        
         } else {
           throw new Error('Failed to fetch reviews');
         }
@@ -97,10 +103,10 @@ const DoctorFeedback = ({ doctor }) => {
           <React.Fragment key={index}>
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
-                <Avatar src={review.avatar || ''} alt={review?.paitent || 'Anonymous'} />
+                <Avatar src={review.avatar || user.avatar.url} alt={review?.paitent || 'Anonymous'} />
               </ListItemAvatar>
               <Stack spacing={1} sx={{ width: '100%' }}>
-                <Typography variant="body1">{review?.patient || 'Anonymous'}</Typography>
+                <Typography variant="body1">{review?.patient ||user.name}</Typography>
                 <Rating value={review.rating} readOnly precision={0.5} />
                 <Typography variant="body2">{review.comment}</Typography>
               </Stack>

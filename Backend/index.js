@@ -23,6 +23,7 @@ import { Message } from './Models/MessageSchema.js';
 import postRoute from './Routes/postRoute.js';
 import jwt from 'jsonwebtoken';
 import morgan from 'morgan';
+import bookingRoute from './Routes/BookingRoute.js'
 
 // Import Hugging Face pipeline
 import { HfInference } from '@huggingface/inference';
@@ -130,6 +131,7 @@ app.use('/api', chat);
 app.use('/api', doctorFeedbackRoute);
 app.use('/api', moodRoutes);
 app.use('/api', analyzeText);
+app.use('/api',bookingRoute)
 
 // Socket.IO logic
 const onlineUsers = new Set();

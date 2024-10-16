@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,14 +9,59 @@ import {
   Rating,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setFeedback } from "../../Redux/reducers/auth";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 // DoctorCard Component
 const DoctorCard = ({ doctor }) => {
   const navigate = useNavigate(); // Moved useNavigate inside the component
+  const token = localStorage.getItem('auth');
+  const dispatch = useDispatch()
+  const [totalRating, setTotalRating] = useState([])
+  const [avgRating, setAvgRating] = useState([])
+  const [totalPatients, setTotalPatients] = useState([])
+  const doctorId = doctor._id;
+
+
+
 
   const handleNavigate = () => {
     navigate(`/doctor/${doctor._id}`);
   };
+
+  
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/doctor/feedback/${doctorId}`, {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+        });
+
+        if (response.status === 200) {
+
+          dispatch(setFeedback(response?.data || []));
+          setTotalRating(response?.data.totalRating)
+          setAvgRating(response?.data.avgRating)
+
+        
+        } else {
+          throw new Error('Failed to fetch reviews');
+        }
+      } catch (error) {
+        toast.error('Failed to fetch reviews.', {
+          position: "top-center",
+          autoClose: 5000,
+        });
+      }
+    };
+
+    if (doctor) {
+      fetchReviews();
+    }
+  }, [doctor]);
 
   return (
     <Card
@@ -51,9 +96,9 @@ const DoctorCard = ({ doctor }) => {
           Specialization: {doctor.specialization || "N/A"}
         </Typography>
         <Box sx={{ mt: 1, mb: 1 }}>
-          <Rating value={doctor.averageRating} readOnly precision={0.5} />
+          <Rating value={avgRating} readOnly precision={0.5} />
           <Typography variant="body2" color="textSecondary">
-            ({doctor.totalRating} ratings)
+            ({totalRating} ratings)
           </Typography>
         </Box>
         <Typography variant="body2" color="textSecondary">

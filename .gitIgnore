@@ -10,6 +10,69 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Node modules (backend and frontend)
+node_modules/
+client/node_modules/
+
+# Build/Production files
+build/
+dist/
+client/build/
+client/dist/
+
+# Environmental variables (secrets and configurations)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Cache and temp files
+.cache/
+.tmp/
+client/.cache/
+
+# Operating system-specific files
+.DS_Store  # macOS
+Thumbs.db  # Windows
+
+# IDE/Editor-specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Dependency lock files (optional if you use package-lock.json or yarn.lock)
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage reports (from tests)
+coverage/
+client/coverage/
+
+# MongoDB database dumps
+*.dump
+*.bson
+
+# Debugging files
+.nyc_output/
+stacktrace.log
+
+# Backend uploads (optional if storing locally)
+uploads/
+public/uploads/
+
+# Temporary or miscellaneous files
+*.swp
+*.tmp
+*.pid
+
+# Git-specific
+.git/
+.gitignore
+
+
+
 # Runtime data
 pids
 *.pid

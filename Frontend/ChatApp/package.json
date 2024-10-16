@@ -20,6 +20,7 @@
     "@mui/x-date-pickers": "^7.17.0",
     "@react-pdf/renderer": "^4.0.0",
     "@reduxjs/toolkit": "^2.2.7",
+    "@zegocloud/zego-uikit-prebuilt": "^2.11.0",
     "6pp": "^1.2.16",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
@@ -42,6 +43,7 @@
     "slick-carousel": "^1.8.1",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
+    "stripe": "^17.2.0",
     "transformers": "^3.1.0"
   },
   "devDependencies": {

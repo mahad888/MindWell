@@ -9,6 +9,7 @@ const  authSlice =  createSlice({
         role: null,
         posts: [],
         mode: "light",
+        feedback:[]
     },
     reducers: {
         setUserFromStorage(state, action) {
@@ -23,6 +24,9 @@ const  authSlice =  createSlice({
         setRole(state, action){
             state.role = action.payload;
             console.log("Role set in state:", action.payload);
+        },
+        setFeedback(state, action){
+            state.feedback = action.payload;
         },
         userNotExist:(state) => {
             state.user = null;
@@ -53,4 +57,4 @@ const  authSlice =  createSlice({
 });
 
 export default authSlice;
-export const {setUserFromStorage,setRole,userExist, userNotExist,setFriends,setPosts,setPost,setMode} = authSlice.actions;
+export const {setUserFromStorage,setRole,userExist, userNotExist,setFriends,setPosts,setPost,setMode,setFeedback} = authSlice.actions;
