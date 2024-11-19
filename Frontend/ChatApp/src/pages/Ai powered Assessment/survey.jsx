@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Send } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
+import axios from "axios";
 import {
   Alert,
   AlertTitle,
@@ -32,36 +34,141 @@ const theme = createTheme({
 
 const Survey = ({ questions }) => {
   const [responses, setResponses] = useState({});
-  const [showError, setShowError] = useState(false);
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const [jsonResponses, setJsonResponses] = useState(null);
+
+  const validateResponses = () => {
+    if (!questions || !Array.isArray(questions)) {
+      setError("Invalid questions configuration");
+      return false;
+    }
+
+    const missingResponses = questions.filter(
+      q => !responses[q.column]
+    );
+
+    if (missingResponses.length > 0) {
+      setError(`Please answer all questions. Missing: ${missingResponses.length} answers`);
+      return false;
+    }
+
+    return true;
+  };
 
   const handleResponseChange = (column, value) => {
-    setResponses(prevResponses => ({
-      ...prevResponses,
-      [column]: value,
+    const updatedResponses = {
+      ...responses,
+      [column]: value.toString() // Ensure value is stored as string
+    };
+    
+    setResponses(updatedResponses);
+    
+    const jsonData = questions.map(question => ({
+      question: question.text,
+      column: question.column,
+      selectedAnswer: value.toString()
     }));
-    setShowError(false);
+    
+    setJsonResponses(jsonData);
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!questions || Object.keys(responses).length !== questions.length) {
-      setShowError(true);
+    setError(null);
+    
+    if (!validateResponses()) {
       return;
     }
+
+    setIsSubmitting(true);
+
     try {
-      const res = await fetch('http://127.0.0.1:5000/predict', {
+      console.log('Sending responses:', responses); // Debug log
+
+      const res = await fetch('http://127.0.0.1:8000/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(responses),
       });
-      const results = await res.json();
-      navigate('/results', { state: { responses, results, questions } });
+
+      if (!res.ok) {
+        throw new Error(`Server responded with status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log('Received results:', data); // Debug log
+
+      // In your handleSubmit function, modify the surveyResponses creation:
+const surveyResponses = questions.map(q => {
+  // First find the matching option by converting response to number for comparison
+  const matchingOption = q.options.find(opt => 
+    opt.value === Number(responses[q.column])
+  );
+  
+  return {
+    question: q.text,
+    column: q.column,
+    selectedAnswer: matchingOption ? matchingOption.label : '' // Store the label (string)
+  };
+});
+
+      if (!data || !Array.isArray(data.predictions)) {
+        throw new Error('Invalid response format from server');
+      }
+
+      // Create a structured result object
+      const resultData = {
+        responses,
+        results: data.predictions,
+        questions,
+        timestamp: new Date().toISOString()
+      };
+      
+      const token = localStorage.getItem("auth")
+      const submitAssessment = async () => {
+        try {
+          // Assuming you have the necessary data in your component's state
+          console.log('HERE ARE YOUR RESPONES: ',responses);
+          console.log("HERE ARE YOUR QUESTIONS: ",questions);
+          console.log("HERE IS YOUR SURVEY RESPONSES: ",surveyResponses);
+          const response = await axios.post('http://localhost:5000/api/postAssessment', {
+            surveyResponses,
+            results:data.predictions[0]
+          }, {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            }
+          });
+          // Handle the successful response
+          console.log(response?.data);
+        } catch (error) {
+          console.error('Error creating assessment:', error);
+          throw error;
+        }
+      };
+
+      submitAssessment();
+      console.log('SHAHIK JAHAN Navigating with data:', resultData); // Debug log
+
+
+      navigate('/results', { 
+        state: resultData,
+        replace: true // Prevent going back to form
+      });
+
     } catch (error) {
-      console.error('Error:', error);
-      setShowError(true);
+      console.error('Submission error:', error);
+      setError(error.message || 'Failed to submit survey. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -117,7 +224,7 @@ const Survey = ({ questions }) => {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
                       <Paper elevation={2} sx={{ p: 3, bgcolor: 'background.paper' }}>
-                        <FormControl component="fieldset">
+                        <FormControl component="fieldset" required>
                           <FormLabel component="legend">
                             <Typography variant="h6" gutterBottom>
                               {question.text}
@@ -158,6 +265,7 @@ const Survey = ({ questions }) => {
                     color="primary"
                     size="large"
                     endIcon={<Send />}
+                    disabled={isSubmitting}
                     sx={{
                       px: 4,
                       py: 1.5,
@@ -165,12 +273,12 @@ const Survey = ({ questions }) => {
                       background: 'linear-gradient(45deg, #3f51b5 30%, #f50057 90%)',
                     }}
                   >
-                    Submit Survey
+                    {isSubmitting ? 'Submitting...' : 'Submit Survey'}
                   </Button>
                 </Box>
               </form>
 
-              {showError && (
+              {error && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -178,9 +286,7 @@ const Survey = ({ questions }) => {
                 >
                   <Alert severity="error" sx={{ mt: 3 }}>
                     <AlertTitle>Error</AlertTitle>
-                    {!questions || Object.keys(responses).length !== questions.length
-                      ? "Please answer all questions before submitting."
-                      : "An error occurred while submitting the survey. Please try again."}
+                    {error}
                   </Alert>
                 </motion.div>
               )}

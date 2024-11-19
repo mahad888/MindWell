@@ -130,7 +130,7 @@ export default function App() {
             <Route path="/survey" element={<Survey questions={questions} />} />
             <Route
               path="/results"
-              element={<Results questions={questions} />}
+              element={<Results />}
             />
             <Route path="/groups" element={<Groups />} />
             <Route path="/chatinbox" element={<Home />} />

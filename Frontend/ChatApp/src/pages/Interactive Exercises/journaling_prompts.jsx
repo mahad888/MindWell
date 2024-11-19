@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowBack, Send, AutoAwesome, Lock, Check, Home } from '@mui/icons-material';
+
 import { 
   AppBar, 
   Toolbar, 
@@ -69,7 +70,7 @@ const JournalingPromptsPage = () => {
       return acc;
     }, {});
   };
-
+  const token = localStorage.getItem("auth")
   const sendData = async () => {
     setIsLoading(true);
     setErrorMessage('');
@@ -80,10 +81,17 @@ const JournalingPromptsPage = () => {
         'http://localhost:5000/api/storeData',
         {
           prompts: transformedPrompts,
-          mindfulVideo: mindVideo || { type: '', allEmotions: [] },
-          mindfulAudio: mindAudio || { type: '', allEmotions: [] },
-          breathVideo: breathingVideo || { type: '', allEmotions: [] },
-          breathAudio: breathingAudio || { type: '', allEmotions: [] }
+          // mindfulVideo: mindVideo || { type: '', allEmotions: [] },
+          // mindfulAudio: mindAudio || { type: '', allEmotions: [] },
+          // breathVideo: breathingVideo || { type: '', allEmotions: [] },
+          // breathAudio: breathingAudio || { type: '', allEmotions: [] }
+        },
+        {
+          withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
         }
       );
       console.log('DATA HAS BEEN SENT SUCCESSFULLY!', response);

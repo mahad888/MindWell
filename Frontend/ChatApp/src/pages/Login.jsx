@@ -42,8 +42,11 @@ const Login = () => {
         },
       });
 
+      console.log(data)
+
       if (data.status) {
         localStorage.setItem("auth", data.token);
+        console.log(data.token)
         localStorage.setItem("user", JSON.stringify(data.user));
 
         dispatch(userExist(data.user));

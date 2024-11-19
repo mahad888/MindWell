@@ -256,3 +256,5 @@ export const questions = [
     },
     // ... (your questions array remains unchanged)
   ];
+
+  export default questions;

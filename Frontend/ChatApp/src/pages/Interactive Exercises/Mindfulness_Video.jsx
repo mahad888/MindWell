@@ -14,6 +14,7 @@ import {
   ExpandMore, ExpandLess, PlayArrow, Pause
 } from '@mui/icons-material';
 import { storeMindVideo } from '../../Redux/reducers/action';
+import axios from 'axios';
 
 const VideoPlayer = ({ videoSrc, darkMode }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -202,7 +203,8 @@ const MindfulnessVideo = () => {
         emotionCounterRef.current[dominantEmotion] = (emotionCounterRef.current[dominantEmotion] || 0) + 1;
 
         const currentTime = Date.now();
-        if (currentTime - lastSaveTimeRef.current >= 60000) { // 60000 ms = 1 minute
+        //IN THE LINE BELOW THE EMOTIONS ARE RECORDED AS PER REQUIRED TIME
+        if (currentTime - lastSaveTimeRef.current >= 20000) { // 60000 ms = 1 minute
           const mostFrequentEmotion = Object.entries(emotionCounterRef.current).reduce(
             (max, [emotion, count]) => (count > max[1] ? [emotion, count] : max),
             ['neutral', 0]
@@ -234,22 +236,59 @@ const MindfulnessVideo = () => {
     detectEmotions();
   };
 
-  const stopDetection = () => {
+  const stopDetection = async() => {
     const mindVideo = {
       type: 'mindfulness video',
       allEmotions: emotionHistory,
     };
-    dispatch(storeMindVideo(mindVideo));
 
     if (detectionRef.current) {
       cancelAnimationFrame(detectionRef.current);
       detectionRef.current = null;
     }
 
+     // Only save if there are emotions recorded
+     if (emotionHistory.length > 0) {
+      //SAVEEMOTIONHISTORY IS AN API
+      await saveEmotionHistory(mindVideo);
+    }
+
     console.log('Emotion history:', emotionHistory);
+    dispatch(storeMindVideo(mindVideo));
+
   };
 
   const getEmoji = (emotion) => emotionEmojis[emotion] || '❓';
+
+
+  const token = localStorage.getItem("auth");
+  const saveEmotionHistory=async (emotions)=>{
+    try{
+      const response=await axios.post(
+        'http://localhost:5000/api/storeData',
+        {
+          // prompts: [],  Empty array since we're not storing prompts
+          mindfulVideo: emotions,// This will contain the current session's emotions
+          // mindfulAudio: { type: '', allEmotions: [] }, 
+          // breathVideo: { type: '', allEmotions: [] },
+          // breathAudio: { type: '', allEmotions: [] }
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+        
+
+        },
+      );
+      console.log('DATA HAS BEEN SENT SUCCESSFULLY!', response);
+    }
+    catch(error){
+      console.error('Error saving emotion data:', error);
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>

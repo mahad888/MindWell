@@ -13,6 +13,7 @@ import feedback from './Routes/feedbackRoute.js';
 import moodRoutes from './Routes/moodManagementRoute.js';
 import analyzeText from './Routes/analyzeTextRoute.js';
 import displayFeedback from './Routes/adminRoute.js';
+
 import { v4 as uuid } from 'uuid';
 import { v2 as cloudinary } from 'cloudinary';
 import chat from './Routes/chatRoute.js';
@@ -132,6 +133,7 @@ app.use('/api', doctorFeedbackRoute);
 app.use('/api', moodRoutes);
 app.use('/api', analyzeText);
 app.use('/api',bookingRoute)
+app.use('/api/storeData',userRoutes);
 
 // Socket.IO logic
 const onlineUsers = new Set();

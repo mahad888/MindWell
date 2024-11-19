@@ -113,7 +113,7 @@ const MindWellAppLayout = ({ children }) => {
           {
             text: "AI-Powered Assessment",
             icon: <AssessmentIcon />,
-            path: "/assessment",
+            path: "/survey",
           },
           {
             text: "Smart Chatbot",
