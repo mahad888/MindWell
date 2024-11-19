@@ -24,7 +24,7 @@ import postRoute from './Routes/postRoute.js';
 import jwt from 'jsonwebtoken';
 import morgan from 'morgan';
 import bookingRoute from './Routes/BookingRoute.js'
-
+import sendSMS from './Routes/sendMessageRoute.js';
 // Import Hugging Face pipeline
 import { HfInference } from '@huggingface/inference';
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
@@ -132,6 +132,7 @@ app.use('/api', doctorFeedbackRoute);
 app.use('/api', moodRoutes);
 app.use('/api', analyzeText);
 app.use('/api',bookingRoute)
+app.use('/api',sendSMS)
 
 // Socket.IO logic
 const onlineUsers = new Set();

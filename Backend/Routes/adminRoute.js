@@ -1,7 +1,7 @@
 import express from "express";
 
 
-import { adminLogin, AllChats, allMessages, AllPatients, getAdminData, getDashboardStats, getFeedback } from "../Controllers/adminController.js";
+import { adminLogin, AllChats, allMessages, AllPatients, approveDoctor, getAdminData, getDashboardStats, getFeedback, getPendingDoctors } from "../Controllers/adminController.js";
 import { adminLoginValidator, validateHandler } from "../lib/validators.js";
 import { adminOnly } from "../Middleware/adminOnly.js";
 
@@ -22,5 +22,7 @@ router.get("/chats", AllChats);
 router.get("/messages", allMessages);
 router.get("/stats",getDashboardStats);
 router.get('/feedback',getFeedback)
+router.get('/pendingDoctors',getPendingDoctors)
+router.put('/approveDoctor/:doctorId',approveDoctor)
 
 export default router;

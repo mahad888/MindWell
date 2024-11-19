@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { updatePatient,deletePatient,getPatient,getAllPatients, searchPatient, sendFriendRequest, acceptFriendRequest, getMyNotifications, getAllFriends, getUserFriends, addRemoveFriend } from "../Controllers/PatientController.js";
-import { updateDoctor,deleteDoctor,getDoctor,getAllDoctors } from "../Controllers/DoctorController.js";
+import { updatePatient,deletePatient,getPatient,getAllPatients, searchPatient, sendFriendRequest, acceptFriendRequest, getMyNotifications, getAllFriends, getUserFriends, addRemoveFriend, getMyAppointments } from "../Controllers/PatientController.js";
+import { updateDoctor,deleteDoctor,getDoctor,getAllDoctors, sendApprovalRequest, getDoctorAppointments } from "../Controllers/DoctorController.js";
 import { authenticate, restrict } from '../Authentications/verifyToken.js';
 import { acceptRequestValidator, sendRequestValidator, validateHandler } from '../lib/validators.js';
 import { upload } from '../Middleware/multer.js';
@@ -21,11 +21,13 @@ router.get('/get/friends', restrict(['patient']), getAllFriends);
 router.get("/:id/friends", restrict(["patient"]), getUserFriends);
 router.patch("/:id/:friendId",restrict(["patient"]), addRemoveFriend);
 router.get('/getAllDoctors',restrict(['patient']), getAllDoctors);
+router.get('/appointments',restrict(['patient']), getMyAppointments);
 
 
 router.get('/getDoctor/:id', getDoctor);
 router.put('/updateDoctor',upload,restrict(['doctor']),updateDoctor);
 router.delete('/deleteDoctor/:id',restrict(['doctor']), deleteDoctor);
-
+router.put('/send/approval/request',restrict(['doctor']), sendApprovalRequest);
+router.get('/doctor/appointments',restrict(['doctor']), getDoctorAppointments);
 
 export default router;

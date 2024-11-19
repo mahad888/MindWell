@@ -1,5 +1,9 @@
-import React from 'react';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { 
+  Card, CardContent, Typography, Button, 
+  Stack, Avatar, Dialog, DialogTitle, 
+  DialogContent, DialogActions, CircularProgress, Grid 
+} from '@mui/material';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -7,48 +11,144 @@ import { useNavigate } from 'react-router-dom';
 const DoctorBookingCard = ({ doctor }) => {
   const token = localStorage.getItem('auth');
   const doctorId = doctor._id;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { timeSlots, ticketPrice, name, avatarUrl } = doctor;
 
-  const handleVideoCalling = () => {
-    navigate(`/video-counselling`)
-  }
-  const handleBooking = async()=>{
-    try {
-      const response = await axios.post(`http://localhost:5000/api/checkout-session/${doctorId}`,{}, {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` }
-        }) 
+  const [selectedSlot, setSelectedSlot] = useState(null); // Use slot for tracking selection
+  const [loading, setLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-        const {data}= response
-        console.log(data)
-        if(data.session.url){
-          window.location.href = data.session.url
+  const handleVideoCalling = () => navigate(`/remote-counselling/appointments`);
 
-        }
-      
-      }
-    catch (error) {
-      toast.error('Failed in appointment booking', {
-        position: "top-center",
-        autoClose: 5000,
-      });
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedSlot(null);
+  };
 
-      
+  const handleBooking = async () => {
+    if (!selectedSlot) {
+      toast.error('Please select a slot before booking.', { position: 'top-center', autoClose: 3000 });
+      return;
     }
-    
-  }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/checkout-session/${doctorId}`,
+        { slot: selectedSlot },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { data } = response;
+      if (data?.session?.url) {
+        window.location.href = data.session.url;
+      }
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed in appointment booking.';
+      toast.error(errorMsg, { position: 'top-center', autoClose: 5000 });
+    } finally {
+      setLoading(false);
+      handleDialogClose();
+    }
+  };
+
   return (
-    <Card sx={{ padding: 2, marginTop: 4 }}>
+    <Card sx={{ padding: 3, marginTop: 4, boxShadow: 4 , maxWidth:"40rem"}}>
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={12} sm={2}>
+          <Avatar 
+            alt={name} 
+            src={avatarUrl || '/default-avatar.png'} 
+            sx={{ width: 80, height: 80 }} 
+          />
+        </Grid>
+        <Grid item xs={12} sm={10}>
+          <Typography variant="h5">{name}</Typography>
+        </Grid>
+      </Grid>
+
       <CardContent>
-        <Typography variant="h6">Consultation Fee: ${doctor?.ticketPrice}</Typography>
-        <Typography variant="body2" color="textSecondary" gutterBottom>
-          Available Slots: {doctor?.availableSlots?.join(', ')}
+        <Typography variant="h6" sx={{ mt: 1 }}>
+          Consultation Fee: <b>${ticketPrice}</b>
         </Typography>
-        <Button variant="contained" color="primary" onClick={handleVideoCalling}> 
-          Book an Appointment
-        </Button>
+
+        <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+          Available Time Slots
+        </Typography>
+
+        {timeSlots.length > 0 ? (
+          timeSlots.map((slot, index) => (
+            <Stack 
+              key={index} 
+              direction="row" 
+              justifyContent="space-between" 
+              alignItems="center" 
+              spacing={2} 
+              sx={{ mb: 2 }}
+            >
+              <Typography variant="body1">{slot.day}</Typography>
+              <Typography variant="body2">
+                {slot.startTime} - {slot.endTime}
+              </Typography>
+              <Button 
+                variant={selectedSlot === slot ? 'contained' : 'outlined'} 
+                size='large'
+                disabled={!slot.available}
+                onClick={() => setSelectedSlot(slot)}
+              >
+                {slot.available ? (selectedSlot === slot ? "Selected" : "Select") : "Unavailable"}
+              </Button>
+            </Stack>
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary">
+            No available slots.
+          </Typography>
+        )}
+
+        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={loading || !selectedSlot}
+            onClick={() => setDialogOpen(true)}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Book Appointment'}
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="secondary" 
+            fullWidth 
+            onClick={handleVideoCalling}
+          >
+            Start Video Call
+          </Button>
+        </Stack>
       </CardContent>
+
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Confirm Appointment</DialogTitle>
+        <DialogContent>
+          <Typography>
+            You are about to book an appointment with Dr. {name} for the selected slot: <b>{selectedSlot?.day} {selectedSlot?.startTime} - {selectedSlot?.endTime}</b>.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleBooking} color="primary" disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : 'Confirm Booking'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };

@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Rating, TextField, Button, Stack, Paper, Avatar, List, ListItem, ListItemAvatar, Divider } from '@mui/material';
+import {
+  Box, Typography, Rating, TextField, Button, Stack, 
+  Paper, Avatar, List, ListItem, ListItemAvatar, Divider
+} from '@mui/material';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFeedback } from '../../Redux/reducers/auth';
+import { styled } from '@mui/material/styles'; // Import styled from MUI
+
+// Custom large star icons for Rating
+const LargeRating = styled(Rating)({
+  '& .MuiRating-icon': {
+    fontSize: '1.5rem', // Set the size of the stars
+  },
+});
 
 const DoctorFeedback = ({ doctor }) => {
   const [reviews, setReviews] = useState([]); // Initialize with an empty array
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [displayReviews, setDisplayReviews] = useState(false);
-  const {user} = useSelector(state=>state.auth)
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
 
   const token = localStorage.getItem('auth');
   const doctorId = doctor._id;
@@ -22,19 +32,18 @@ const DoctorFeedback = ({ doctor }) => {
       try {
         const response = await axios.get(`http://localhost:5000/api/doctor/feedback/${doctorId}`, {
           withCredentials: true,
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         });
 
         if (response.status === 200) {
-          setReviews(response?.data.feedback || []);  // Set reviews or default to empty array
+          setReviews(response?.data.feedback || []);
           dispatch(setFeedback(response?.data || []));
-        
         } else {
           throw new Error('Failed to fetch reviews');
         }
       } catch (error) {
         toast.error('Failed to fetch reviews.', {
-          position: "top-center",
+          position: 'top-center',
           autoClose: 5000,
         });
       }
@@ -52,24 +61,22 @@ const DoctorFeedback = ({ doctor }) => {
   const handleAddReview = async () => {
     if (rating && comment.trim()) {
       try {
-        const { data, status } = await axios.post(`http://localhost:5000/api/doctor/feedback/${doctorId}`, {
-          rating,
-          comment,
-        }, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const { data, status } = await axios.post(
+          `http://localhost:5000/api/doctor/feedback/${doctorId}`,
+          { rating, comment },
+          {
+            withCredentials: true,
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          }
+        );
 
         if (status === 201) {
           const newReview = data.review;
-          setReviews([...reviews, newReview]); // Spread reviews safely
+          setReviews([...reviews, newReview]);
           setRating(0);
           setComment('');
           toast.success('Review added successfully!', {
-            position: "top-center",
+            position: 'top-center',
             autoClose: 3000,
           });
         } else {
@@ -77,37 +84,49 @@ const DoctorFeedback = ({ doctor }) => {
         }
       } catch (error) {
         toast.error('Failed to submit review.', {
-          position: "top-center",
+          position: 'top-center',
           autoClose: 5000,
         });
       }
     } else {
       toast('Please provide a rating and a comment.', {
-        position: "top-center",
+        position: 'top-center',
         autoClose: 5000,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
 
   return (
     <Stack spacing={3} sx={{ marginTop: 4 }}>
-      <List sx={{ width: '100%', maxWidth: 700, maxHeight: 300, bgcolor: 'background.paper', overflowY: 'auto' }}>
+      <List
+        sx={{
+          width: '100%',
+          maxWidth: 700,
+          maxHeight: 300,
+          bgcolor: 'background.paper',
+          overflowY: 'auto',
+        }}
+      >
         <Typography variant="h6" sx={{ textAlign: 'center' }}>
           Patients Feedback
         </Typography>
-        <Button variant='outlined' sx={{ width: '10rem', position: 'relative', left: '30rem' }} onClick={handleDisplayReviews}>
+        <Button
+          variant="outlined"
+          sx={{ width: '10rem', position: 'relative', left: '30rem' }}
+          onClick={handleDisplayReviews}
+        >
           {displayReviews ? 'Show less' : 'Show All'}
         </Button>
         {(displayReviews ? reviews : reviews?.slice(0, 2))?.map((review, index) => (
           <React.Fragment key={index}>
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
-                <Avatar src={review.avatar || user.avatar.url} alt={review?.paitent || 'Anonymous'} />
+                <Avatar src={review.avatar || user.avatar.url} alt={review?.patient || 'Anonymous'} />
               </ListItemAvatar>
               <Stack spacing={1} sx={{ width: '100%' }}>
-                <Typography variant="body1">{review?.patient ||user.name}</Typography>
-                <Rating value={review.rating} readOnly precision={0.5} />
+                <Typography variant="body1">{review?.patient || user.name}</Typography>
+                <LargeRating value={review.rating} readOnly precision={0.5} />
                 <Typography variant="body2">{review.comment}</Typography>
               </Stack>
             </ListItem>
@@ -118,7 +137,11 @@ const DoctorFeedback = ({ doctor }) => {
 
       <Paper sx={{ padding: 2, width: '40rem' }}>
         <Typography variant="h6">Add Your Review</Typography>
-        <Rating value={rating} onChange={(e, newValue) => setRating(newValue)} sx={{ marginTop: 2 }} />
+        <LargeRating
+          value={rating}
+          onChange={(e, newValue) => setRating(newValue)}
+          sx={{ marginTop: 2 }}
+        />
         <TextField
           label="Your Comment"
           fullWidth

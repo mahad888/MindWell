@@ -14,7 +14,10 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { CameraAlt as CameraAltIcon ,Delete as DeleteIcon} from "@mui/icons-material";
+import {
+  CameraAlt as CameraAltIcon,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -40,8 +43,6 @@ const specializationOptions = [
   "Child and Adolescent Psychiatrist",
 ];
 
-
-
 const daysOfWeek = [
   "Monday",
   "Tuesday",
@@ -52,29 +53,49 @@ const daysOfWeek = [
   "Sunday",
 ]; //
 
-
 const UpdateProfile = () => {
-const {user} = useSelector(state => state.auth);
-const dispatch = useDispatch()
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  console.log(user.experiences)
+  console.log(user)
 
   const [doctorInfo, setDoctorInfo] = useState({
-    name: user?.name,
-    email: user?.email,
-    bio: user?.bio,
-    about: user?.about,
-    specialization: user?.specialization,
-    appointmentFee: "",
-    avatar:"",
-    experiences: [
-      { startDate: dayjs(), endDate: dayjs(), position: "", hospital: "" },
-    ],
-    qualifications: [
-      { startDate: dayjs(), endDate: dayjs(), degree: "", university: "" },
-    ],
-    timeSlots: [{ day: "", startTime: dayjs(), endTime: dayjs() }],
+    name: user?.name || "",
+    email: user?.email || "",
+    bio: user?.bio || "",
+    about: user?.about || "",
+    specialization: user?.specialization || "",
+    appointmentFee: user?.appointmentFee || 0,
+    avatar: "",
+    experiences:
+      user?.experiences?.map((experience) => ({
+        // Convert to Day.js object (for DatePicker component
+        startDate: dayjs(experience.startDate),
+        endDate: dayjs(experience.endDate),
+        position: experience.position, // Fixed typo
+        hospital: experience.hospital,
+      })) || [],
+
+    qualifications:
+      user?.qualifications?.map((qualification) => ({
+        startDate: dayjs(qualification.startDate),
+        endDate: dayjs(qualification.endDate),
+        degree: qualification.degree,
+        university: qualification.university,
+      })) || [],
+
+    timeSlots:
+      user?.timeSlots?.map((timeSlot) => ({
+        day: timeSlot.day,
+        startTime: dayjs(timeSlot.startTime),
+        endTime: dayjs(timeSlot.endTime),
+      })) || [],
   });
-  const [avatar, setAvatar] = useState({  file: null,
-    previewUrl: user?.avatar?.url,});
+
+  const [avatar, setAvatar] = useState({
+    file: null,
+    previewUrl: user?.avatar?.url,
+  });
   const [errors, setErrors] = useState({
     name: "",
     email: "",
@@ -119,13 +140,16 @@ const dispatch = useDispatch()
   };
 
   const handleAvatarChange = (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
       // Optionally transform the image URL for preview (using a utility function like URL.createObjectURL or custom transformation)
-      setAvatar((prev) => ({ ...prev, file: file, previewUrl: URL.createObjectURL(file) }))
+      setAvatar((prev) => ({
+        ...prev,
+        file: file,
+        previewUrl: URL.createObjectURL(file),
+      }));
     }
-  }
-
+  };
 
   const handleInputChange = (e, index, field, type) => {
     const newValues = [...doctorInfo[type]];
@@ -148,8 +172,6 @@ const dispatch = useDispatch()
     setDoctorInfo({ ...doctorInfo, experiences: updatedExperiences });
   };
 
-  
-
   // Remove experience
   const removeExperience = (index) => {
     const updatedExperiences = doctorInfo.experiences.filter(
@@ -166,40 +188,64 @@ const dispatch = useDispatch()
     setDoctorInfo({ ...doctorInfo, qualifications: updatedQualifications });
   };
 
-
   // Remove qualification
   const removeTimeSlots = (index) => {
-    const updatedTimeSlots= doctorInfo.timeSlots.filter(
+    const updatedTimeSlots = doctorInfo.timeSlots.filter(
       (_, idx) => idx !== index
     );
     setDoctorInfo({ ...doctorInfo, timeSlots: updatedTimeSlots });
   };
-const token = localStorage.getItem("auth");
+
+  const token = localStorage.getItem("auth");
+
+  const handleRequest =()=>{
+
+    axios.put(`http://localhost:5000/api/send/approval/request`, {
+    },
+    {
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    }
+    ).then((res) => {
+      toast.success('Approval request sent successfully!');
+      console.log(res.data)
+    }).catch((error) => {
+      console.error('Error sending approval request:', error);
+    });
+  }
 
   const handleSubmit = async () => {
     if (validateForm()) {
       try {
         const formData = new FormData();
-      formData.append('name', doctorInfo.name);
-      formData.append('email', doctorInfo.email);
-      formData.append('bio', doctorInfo.bio);
-      formData.append('about', doctorInfo.about);
-      formData.append('specialization', doctorInfo.specialization);
-      formData.append('appointmentFee', doctorInfo.appointmentFee);
-      formData.append('avatar', avatar.file); 
-      formData.append("experiences",doctorInfo.experiences)
-      formData.append("timeSlots",doctorInfo.timeSlots)
+        formData.append("name", doctorInfo.name);
+        formData.append("email", doctorInfo.email);
+        formData.append("bio", doctorInfo.bio);
+        formData.append("about", doctorInfo.about);
+        formData.append("specialization", doctorInfo.specialization);
+        formData.append("appointmentFee", doctorInfo.appointmentFee);
+        formData.append("qualifications", JSON.stringify(doctorInfo.qualifications));
+        formData.append("avatar", avatar.file);
+        formData.append("experiences", JSON.stringify(doctorInfo.experiences));
+        console.log("doctorInfo.experiences", doctorInfo.experiences);
+        formData.append("timeSlots", JSON.stringify( doctorInfo.timeSlots));
+        console.log("doctorInfo.timeSlots", doctorInfo.timeSlots);
 
-        const response = await axios.put("http://localhost:5000/api/updateDoctor", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, 
-          },
-        });
+
+        const response = await axios.put(
+          "http://localhost:5000/api/updateDoctor",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         console.log("Profile updated successfully:", response.data);
-        
-        dispatch(userExist(response.data))
+
+        dispatch(userExist(formData));
         toast.success("Profile updated successfully");
         // Handle success (e.g., show a success message, redirect, etc.)
       } catch (error) {
@@ -228,7 +274,8 @@ const token = localStorage.getItem("auth");
               Update Profile Information
             </Typography>
             <Grid container spacing={3}>
-              {/* Avatar */} <Grid item xs={12} container justifyContent="center">
+              {/* Avatar */}{" "}
+              <Grid item xs={12} container justifyContent="center">
                 <Stack position="relative" width="15rem" height="15rem">
                   <Avatar
                     sx={{
@@ -290,11 +337,11 @@ const token = localStorage.getItem("auth");
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Bio (Max 50 characters)"
+                  label="Bio (Max 150 characters)"
                   name="bio"
                   value={doctorInfo.bio}
                   onChange={handleProfileChange}
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 150 }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -381,7 +428,11 @@ const token = localStorage.getItem("auth");
                       label="Position"
                       value={experience.position}
                       onChange={(e) =>
-                        handleExperienceChange(index, "position", e.target.value)
+                        handleExperienceChange(
+                          index,
+                          "position",
+                          e.target.value
+                        )
                       }
                     />
                   </Grid>
@@ -391,19 +442,22 @@ const token = localStorage.getItem("auth");
                       label="Hospital"
                       value={experience.hospital}
                       onChange={(e) =>
-                        handleExperienceChange(index, "hospital", e.target.value)
+                        handleExperienceChange(
+                          index,
+                          "hospital",
+                          e.target.value
+                        )
                       }
                     />
                   </Grid>
                   <Grid item>
-                      <IconButton
-                        onClick={() => removeExperience(index)}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Grid>
-
+                    <IconButton
+                      onClick={() => removeExperience(index)}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
                 </React.Fragment>
               ))}
               {/* Qualifications */}
@@ -454,7 +508,11 @@ const token = localStorage.getItem("auth");
                       label="Degree"
                       value={qualification.degree}
                       onChange={(e) =>
-                        handleQualificationChange(index, "degree", e.target.value)
+                        handleQualificationChange(
+                          index,
+                          "degree",
+                          e.target.value
+                        )
                       }
                     />
                   </Grid>
@@ -464,7 +522,11 @@ const token = localStorage.getItem("auth");
                       label="University"
                       value={qualification.university}
                       onChange={(e) =>
-                        handleQualificationChange(index, "university", e.target.value)
+                        handleQualificationChange(
+                          index,
+                          "university",
+                          e.target.value
+                        )
                       }
                     />
                   </Grid>
@@ -527,28 +589,55 @@ const token = localStorage.getItem("auth");
                         <TextField {...params} fullWidth />
                       )}
                     />
-
                   </Grid>
                   <Grid item>
-                      <IconButton
-                        onClick={() => removeTimeSlots(index)}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Grid>
+                    <IconButton
+                      onClick={() => removeTimeSlots(index)}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
                 </Grid>
               ))}
-              
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </Button>
-              </Grid>
+ <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center', // Center horizontally
+        alignItems: 'center', // Center vertically
+        width: '100%', // Full width
+      }}
+    >
+      <Stack
+        direction="row" // Set the direction to 'row'
+        spacing={2} // Reasonable spacing between buttons
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          sx={{
+            width: '200px', // Fixed width for the button
+            height: '50px',
+            borderRadius: 2,
+          }}
+        >
+          Submit
+        </Button>
+        <Button 
+          variant="outlined"
+          color="primary"
+          onClick={handleRequest}
+          sx={{
+            width: '200px', // Fixed width for consistency
+            height: '50px',
+            borderRadius: 2,
+          }}
+        >
+          Send Approval Request
+        </Button>
+      </Stack>
+      </Box>
             </Grid>
           </Paper>
         </Box>

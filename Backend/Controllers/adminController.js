@@ -234,5 +234,61 @@ export const getFeedback = async (req, res) => {
 };
 
 
+export const getPendingDoctors = async(req, res) => {
+  try {
+    const doctors = await Doctor.find({ isApproved: 'pending' });
+    res.status(200).json(doctors);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Approve doctor by ID
+export const approveDoctor = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { request } = req.body;
+
+    console.log('Doctor ID:', doctorId);
+
+    let updatedDoctor;
+
+    // Handle 'cancelled' request
+    if (request === 'cancelled') {
+      updatedDoctor = await Doctor.findByIdAndUpdate(
+        doctorId,
+        { isApproved: 'cancelled' },
+        { new: true }
+      );
+
+      // Send response immediately and return to avoid further execution
+      return res.status(200).json({
+        message: 'Doctor request has been cancelled',
+        doctor: updatedDoctor,
+      });
+    }
+
+    // Handle 'approved' request
+    updatedDoctor = await Doctor.findByIdAndUpdate(
+      doctorId,
+      { isApproved: 'approved' },
+      { new: true }
+    );
+
+    // Send response for the 'approved' case
+    res.status(200).json({
+      message: 'Doctor has been approved successfully',
+      doctor: updatedDoctor,
+    });
+  } catch (error) {
+    console.error('Error approving/cancelling doctor:', error);
+
+    // Send error response only once
+    res.status(500).json({ error: 'Failed to process doctor request' });
+  }
+};
+
+
+
 
 

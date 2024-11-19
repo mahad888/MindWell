@@ -65,6 +65,12 @@ import BreathingExercisePage from "./pages/Interactive Exercises/breathing_exerc
 import JournalingPromptsPage from "./pages/Interactive Exercises/journaling_prompts.jsx";
 import VideoCounselling from "./pages/Remote Counselling/VideoCounselling.jsx";
 import VideoCallRoom from "./pages/Remote Counselling/VideoCallRoom.jsx";
+import MyAppointment from "./pages/Remote Counselling/MyAppointment.jsx";
+import DoctorAppointment from "./pages/Remote Counselling/DoctorAppointment.jsx";
+import EducationalGame from "./pages/Mindful games/EducationalGame.jsx";
+import MindGames from "./pages/Mindful games/MindGames.jsx";
+import MoodManagementGame from "./pages/Mindful games/MoodManagementGame.jsx";
+import GameSelection from "./pages/Mindful games/MindfulGames.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -149,11 +155,17 @@ export default function App() {
             <Route path = "/breathing_exercises" element = {<BreathingExercisePage/>}/>
             <Route path = "/breathing_audio" element = {<BreathingAudio/>}/>
             <Route path = "/breathing_video" element = {<BreathingVideo/>}/>
-            <Route path = '/video-counselling' element = {<VideoCounselling/>}/>
+            <Route path = '/video-counselling/:meetingCode' element = {<VideoCounselling/>}/>
             <Route path = "/room/:roomId" element = {<VideoCallRoom/>}/>
+            <Route path = 'remote-counselling/appointments' element = {<MyAppointment/>}/>
             <Route path = "/journaling_prompts" element = {<JournalingPromptsPage/>}/>
             <Route path = 'assessment' element = {<Survey/>}/>
             <Route path = 'results' element = {<Results/>}/>
+            <Route path = 'educational-game' element = {<EducationalGame/>}/>
+            <Route path = 'memory-game' element = {<MindGames/>}/>
+            <Route path = 'mood-mangement' element={<MoodManagementGame/>}/>
+            <Route path = 'mindful-games' element ={<GameSelection/>}/>
+
 
             <Route path="/services" element={<Services />} />
             <Route path="/profile" element={<Profile />}>
@@ -165,6 +177,7 @@ export default function App() {
             <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
             <Route path="/doctor/update-profile" element={<UpdateProfile />} />
             <Route path = "/doctor/registered-patients" element = {<Appointments/>}/>
+            <Route path="/doctor/appointments" element={<DoctorAppointment/>} />
           </Route>
 
           {/* Public Routes */}

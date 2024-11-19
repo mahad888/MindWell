@@ -331,3 +331,21 @@ export const addRemoveFriend = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+
+
+export const getMyAppointments = async (req, res) => {  
+  try {
+    const bookings = await Booking.find({ patient: req.userId }).populate(
+      "doctor",
+      "name avatar"
+    );
+    console.log(bookings)
+    if (!bookings) {
+      return res.status(404).json({ message: "No appointments found" });
+    }
+    res.status(200).json({ success: true, bookings });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to get appointments" });
+  }
+}

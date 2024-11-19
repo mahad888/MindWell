@@ -1,3 +1,4 @@
+import Booking from "../Models/BookingSchema.js";
 import Doctor from "../Models/DoctorSchema.js";
 import { uploadFilesToCloudinary } from "../utils/features.js";
 import bcrypt from "bcrypt";
@@ -6,6 +7,10 @@ export const updateDoctor = async (req, res) => {
   const updateData = req.body;
   const file = req.file;
   console.log(file)
+  console.log(updateData)
+  updateData.qualifications = JSON.parse(updateData.qualifications);
+  updateData.experiences = JSON.parse(updateData.experiences);
+  updateData.timeSlots = JSON.parse(updateData.timeSlots);
  
 
   try {
@@ -63,8 +68,8 @@ export const getAllDoctors = async (req, res) => {
       searchFilter.$or = [
         { name: { $regex: query, $options: "i" } },
         { specialization: { $regex: query, $options: "i" } },
-        { experiences: { $regex: query, $options: "i" } },
-        { qualifications: { $regex: query, $options: "i" } },
+        // { experiences: { $regex: query, $options: "i" } },
+        // { qualifications: { $regex: query, $options: "i" } },
       ];
 
       // Add appointmentFee as a condition only if the query is a number
@@ -134,5 +139,38 @@ export const getDoctorProfile = async (req, res) => {
     res.status(200).json({ sucesss: true, Doctor: doctor ,appointments});
   } catch (err) {
     res.status(500).json({ message: "Failed to get Doctor" });
+  }
+}
+
+export const sendApprovalRequest = async (req, res) => {
+  const id = req.userId;
+  try {
+    const doctor = await Doctor.findByIdAndUpdate(id, { isApproved: "pending" }, { new: true });
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+    res.status(200).json({ message: "Approval request sent" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send approval request" });
+  }
+}
+
+
+export const getDoctorAppointments = async (req, res) => {  
+  try {
+    let bookings = await Booking.find({ doctor: req.userId }).populate(
+      "patient",
+      "name avatar email gender"
+    );
+    bookings = bookings.reverse()
+    console.log(bookings)
+    if (!bookings) {
+      return res.status(404).json({ message: "No appointments found" });
+      console.log(bookings)
+    }
+    res.status(200).json({ success: true, bookings });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to get appointments" });
   }
 }

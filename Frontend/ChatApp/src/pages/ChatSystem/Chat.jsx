@@ -27,6 +27,7 @@ import { setIsFileMenu } from "../../Redux/reducers/misc";
 import { removeNewMessagesAlert } from "../../Redux/reducers/chat";
 import axios from "axios";
 import {toast} from "react-hot-toast";
+import OptionsDialog from "../../components/shared/OptionsDialoge";
 
 
 
@@ -66,6 +67,7 @@ const Chat = ({chatId}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const chatDetails = useChatDetailsQuery({chatId,skip:!chatId})
+  const [isOptionsDialogOpen, setIsOptionsDialogOpen] = useState(false);
  
   const [message, setMessage] = useState("");
   const members = chatDetails?.data?.chat?.members;
@@ -148,10 +150,8 @@ const Chat = ({chatId}) => {
   )
   console.log(response.data)
   if(response.data.isCriticalMessage){
-    toast("We detected potential suicidal or depressive thoughts in your message Please consider reaching out to a professional or exploring our interactive exercises for support")
-  
+    setIsOptionsDialogOpen(true); 
   }
-
   
 }
 
@@ -159,6 +159,9 @@ const Chat = ({chatId}) => {
     console.error(error);
   }
 }
+const handleCloseDialog = () => {
+  setIsOptionsDialogOpen(false); // Close the dialog when needed
+};
   
   
 
@@ -396,6 +399,7 @@ const Chat = ({chatId}) => {
         </Stack>
       </form>
       <FileMenu anchorE1={fileMenuAnchor} chatId={chatId} />
+      <OptionsDialog open={isOptionsDialogOpen} onClose={handleCloseDialog} content = {"message"} />
     </>
   );
 };

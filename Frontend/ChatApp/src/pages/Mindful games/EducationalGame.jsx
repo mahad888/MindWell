@@ -1,31 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Card, CardContent, Typography, CircularProgress, Grid, LinearProgress, Snackbar, Alert, Tooltip, IconButton,
-  Divider, Avatar, Paper
+  Box, Button, Card, Typography, CircularProgress, Grid, LinearProgress, Snackbar, Alert, Tooltip, IconButton,
+  Avatar, Paper,
 } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
+import { randomQuestions } from './questions';
 
 // Sample questions with additional features
-const questions = [
-  {
-    question: 'What is mindfulness?',
-    options: ['A type of meditation', 'A state of being aware', 'Both', 'None of the above'],
-    answer: 2,
-    hint: 'Think about what mindfulness entails in daily life.',
-    explanation: 'Mindfulness is both a type of meditation and a state of being aware, focusing on the present moment.',
-  },
-  {
-    question: 'Which of the following is a common sign of stress?',
-    options: ['Increased energy', 'Feeling overwhelmed', 'Improved concentration', 'Enhanced sleep quality'],
-    answer: 1,
-    hint: 'Consider how the body reacts to stress.',
-    explanation: 'Feeling overwhelmed is a common sign of stress as it affects emotional and mental state.',
-  },
-  // Additional questions can be added here
-];
+const questions = [...randomQuestions]
 
-const MentalHealthGame = () => {
+const EducationalGame = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -34,11 +20,14 @@ const MentalHealthGame = () => {
   const [timer, setTimer] = useState(15);
   const [hintUsed, setHintUsed] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [questions, setQuestions] = useState(randomQuestions);
+
+
 
   useEffect(() => {
     if (timer > 0 && !showFeedback) {
       const countdown = setInterval(() => {
-        setTimer(timer - 1);
+        setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
       return () => clearInterval(countdown);
     } else if (timer === 0) {
@@ -60,7 +49,6 @@ const MentalHealthGame = () => {
       }
       setShowFeedback(true);
       setLoading(false);
-      setSnackbarOpen(true);
     }, 500);
   };
 
@@ -90,6 +78,7 @@ const MentalHealthGame = () => {
   };
 
   return (
+    <MindWellAppLayout>
     <Box
       display="flex"
       flexDirection="column"
@@ -100,7 +89,7 @@ const MentalHealthGame = () => {
     >
       <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, maxWidth: 800, width: '100%' }}>
         <Box display="flex" flexDirection="column" alignItems="center">
-          <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56, marginBottom: 2 }}>
+          <Avatar sx={{ bgcolor: 'primary', width: 56, height: 56, marginBottom: 2 }}>
             <EmojiEventsIcon />
           </Avatar>
           <Typography variant="h4" component="div" gutterBottom>
@@ -111,11 +100,12 @@ const MentalHealthGame = () => {
             variant="determinate"
             value={((currentQuestionIndex + 1) / questions.length) * 100}
             sx={{ width: '100%', mb: 2 }}
+            color='primary'
           />
 
           <Box display="flex" alignItems="center" width="100%" mb={2}>
             <Typography variant="h6" component="div" flexGrow={1}>
-              {questions[currentQuestionIndex].question}
+              {questions[currentQuestionIndex]?.question}
             </Typography>
             <Typography variant="body2" color="textSecondary">
               Time left: {timer} seconds
@@ -145,9 +135,9 @@ const MentalHealthGame = () => {
 
             <Button
               variant="contained"
-              color="primary"
               onClick={showFeedback ? handleNextQuestion : handleSubmitAnswer}
               fullWidth
+              color={showFeedback ? 'primary' : 'secondary'}
             >
               {showFeedback ? 'Next Question' : 'Submit Answer'}
             </Button>
@@ -162,7 +152,7 @@ const MentalHealthGame = () => {
                 color={selectedOption === questions[currentQuestionIndex].answer ? 'success.main' : 'error.main'}
                 gutterBottom
               >
-                {selectedOption === questions[currentQuestionIndex].answer ? 'Correct!' : 'Incorrect!'} 
+                {selectedOption === questions[currentQuestionIndex].answer ? 'Correct!' : 'Incorrect!'}{' '}
                 {questions[currentQuestionIndex].explanation}
               </Typography>
             </Box>
@@ -181,7 +171,8 @@ const MentalHealthGame = () => {
         </Alert>
       </Snackbar>
     </Box>
+    </MindWellAppLayout>
   );
 };
 
-export default MentalHealthGame;
+export default EducationalGame;

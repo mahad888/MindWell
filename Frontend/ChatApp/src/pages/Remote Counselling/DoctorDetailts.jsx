@@ -69,11 +69,11 @@ const DoctorDetails = () => {
   return (
     <Stack spacing={4} sx={{ padding: { xs: "1rem", md: "2rem" } }}>
       <Grid container spacing={4}>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={8} lg={6}>
           <DoctorProfile doctor={doctor} />
           <AboutDoctor doctor={doctor} />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4} lg={6} >
           <DoctorBookingCard doctor={doctor} />
         </Grid>
       </Grid>

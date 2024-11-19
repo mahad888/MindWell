@@ -50,7 +50,7 @@ const cardData = [
 const RemoteCounselling = () => {
   const navigate = useNavigate();
   const handleAppointment = () => {
-    navigate("/appointment");
+    navigate("/doctors");
   };
 
   return (
@@ -110,7 +110,7 @@ const RemoteCounselling = () => {
                     fontSize: { xs: "1rem", md: "1.2rem" },
                     backgroundColor: "#007BFF", // Changed to a visible color
                     "&:hover": {
-                      backgroundColor: "#FFC048",
+                      backgroundColor: "#7CB9E8",
                     },
                   }}
                   onClick={handleAppointment}

@@ -10,11 +10,10 @@ const analyzeMessage = async (messageContent) => {
     });
 
     // Check for specific keywords
-    const containsSuicidalKeywords = messageContent.match(/(?:suicide|kill|hurt|can't take it|depressed)/i);
 
     // Assuming the model gives labels as "positive", "negative", or other categories
     const isNegative = result[0].label === 'NEGATIVE' && result[0].score > 0.9; // Adjust the score threshold
-    return isNegative || containsSuicidalKeywords; // Return true if either condition is met
+    return isNegative ; // Return true if either condition is met
   } catch (error) {
     console.error('Error during sentiment analysis:', error);
     throw error; // Rethrow the error for handling it later

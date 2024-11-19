@@ -79,7 +79,7 @@ const DoctorCard = ({ doctor }) => {
       <CardMedia
         component="img"
         height="250"
-        image={doctor.avatar.url}
+        image={doctor?.avatar?.url}
         alt={doctor.name}
         sx={{ borderRadius: "15px 15px 0 0", cursor: "pointer" }}
         onClick={handleNavigate}
@@ -93,7 +93,7 @@ const DoctorCard = ({ doctor }) => {
           {doctor.name}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Specialization: {doctor.specialization || "N/A"}
+          Specialization: {doctor?.specialization || "N/A"}
         </Typography>
         <Box sx={{ mt: 1, mb: 1 }}>
           <Rating value={avgRating} readOnly precision={0.5} />

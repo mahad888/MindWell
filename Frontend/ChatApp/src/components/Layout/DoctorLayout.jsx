@@ -35,6 +35,11 @@ const adminTabs = [
     path: "/doctor/dashboard",
   },
   {
+    label: "Appointments",
+    icon: <Person />,
+    path: "/doctor/appointments"
+  },
+  {
     label: "Patients",
     icon: <Person />,
     path: "/doctor/registered-patients",

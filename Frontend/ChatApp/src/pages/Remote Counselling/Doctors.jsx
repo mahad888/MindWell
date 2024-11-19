@@ -31,8 +31,9 @@ const Doctors = () => {
       setLoading(true);
       setError(null);
       try {
+  
         const { data } = await axios.get(
-          `http://localhost:5000/api/getAllDoctors?query=${debouncedQuery}`,
+          `http://localhost:5000/api/getAllDoctors?query=${debouncedQuery}`, 
           {
             withCredentials: true,
             headers: {
@@ -44,6 +45,7 @@ const Doctors = () => {
         setDoctors(data.doctors); // Store doctor data in state
       } catch (err) {
         setError(err?.response?.data?.message || "Failed to fetch doctors.");
+        console.log(err)
       } finally {
         setLoading(false);
       }

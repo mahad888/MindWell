@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Box, Tab, Tabs, Typography, Container } from '@mui/material';
 import MemoryGame from './MemoryGames';
 import StressBall from './StressBall';
+import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
 
 const MindGames = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -12,6 +13,7 @@ const MindGames = () => {
   };
 
   return (
+    <MindWellAppLayout>
     <Container>
       <Typography variant="h2" align="center" gutterBottom>
         Stress Management Mini-Games
@@ -32,7 +34,8 @@ const MindGames = () => {
         {activeTab === 1 && <StressBall />}
       </Box>
     </Container>
+    </MindWellAppLayout>
   );
 };
 
-export default MindGames;
+export default MindGames ;

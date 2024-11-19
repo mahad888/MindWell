@@ -17,14 +17,20 @@ const bookingSchema = new mongoose.Schema(
     //   type: Date,
     //   required: true,
     // },
-    status: {
-      type: String,
-      enum: ["pending", "approved", "cancelled"],
-      default: "pending",
+    timeSlot: {
+      type: Object
     },
     isPaid: {
       type: Boolean,
-      default: true,
+      default: false,
+    },
+    meetingCode: {
+      type: String,
+      required: true,
+    },
+    session: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

@@ -95,6 +95,8 @@ const MindWellAppLayout = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem("auth");
     localStorage.removeItem("user");
+    localStorage.removeItem("dontShowAgain");
+    
     dispatch(userNotExist());
     toast.success("Logged out successfully");
 
@@ -288,35 +290,55 @@ const MindWellAppLayout = ({ children }) => {
       </AppBar>
 
       <Grid container>
-        <Box sx={{ display: "flex" }}>
-          <Grid item md={3} lg={2.5}>
-            <Drawer
-              variant="permanent"
-              sx={{
-                display: { xs: "none", sm: "block" },
-                "& .MuiDrawer-paper": {
-                  boxSizing: "border-box",
-                  width: drawerWidth,
-                },
-              }}
-              open
-            >
-              {drawer}
-            </Drawer>
-          </Grid>
-          <Divider />
-          <Grid
-            item
-            md={9}
-            lg={10}
-            marginTop={7}
-            minHeight={"100vh"}
-            bgcolor={"#f7f7f7"}
+      <Box sx={{ display: 'flex', width: '100%' }}>
+        
+        {/* Drawer Section */}
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          md={3}
+          lg={2.5}
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+          }}
+        >
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: 'none', sm: 'block' },
+              '& .MuiDrawer-paper': {
+                boxSizing: 'border-box',
+                width: drawerWidth,
+              },
+            }}
+            open
           >
-            {children}
-          </Grid>
-        </Box>
-      </Grid>
+            {drawer}
+          </Drawer>
+        </Grid>
+        
+        <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+
+        {/* Main Content Section */}
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={9}
+          lg={10}
+          sx={{
+            marginTop: { lg: 7, xs: 0 },
+            minHeight: "100vh",
+            bgcolor: "#f7f7f7",
+            width: '100%',
+            color:"primary"
+          }}
+        >
+          {children}
+        </Grid>
+      </Box>
+    </Grid>
     </ThemeProvider>
   );
 };

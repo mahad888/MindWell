@@ -11,7 +11,7 @@ export const authenticate = async (req, res, next) => {
         return res.status(401).json({success:false, message: 'Authorization Header is required' });
     }
     try {
-        const token = authHeader.split(' ')[1];
+        const token = authHeader.split(' ')[1]; 
         const decoded = jwt.verify(token, process.env.JWT_SECRET_key);
         console.log('Decoded:', decoded);
         req.userId = decoded.id;

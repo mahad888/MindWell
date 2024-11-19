@@ -31,6 +31,7 @@
     "express-validator": "^7.2.0",
     "gemini-api": "^2.0.4",
     "jsonwebtoken": "^9.0.2",
+    "messagebird": "^4.0.1",
     "mogoose": "^0.0.1-security",
     "mongoose": "^8.3.4",
     "morgan": "^1.10.0",
@@ -38,9 +39,12 @@
     "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
     "openai": "^4.47.1",
+    "qrcode-terminal": "^0.12.0",
     "socket.io": "^4.7.5",
     "stripe": "^17.2.0",
     "transformers": "^3.1.0",
-    "uuid": "^10.0.0"
+    "twilio": "^5.3.4",
+    "uuid": "^10.0.0",
+    "whatsapp-web.js": "^1.26.0"
   }
 }
