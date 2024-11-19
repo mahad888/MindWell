@@ -15,6 +15,7 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { storeMindAudio } from '../../Redux/reducers/action';
+import axios from 'axios';
 
 const AudioPlayer = ({ audioSrc, darkMode }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -236,7 +237,7 @@ const MindfulnessAudio = () => {
     detectEmotions();
   };
 
-  const stopDetection = () => {
+  const stopDetection = async() => {
     const mindAudio = {
       type: "mindfulness audio",
       allEmotions: emotionHistory,
@@ -245,11 +246,46 @@ const MindfulnessAudio = () => {
       cancelAnimationFrame(detectionRef.current);
       detectionRef.current = null;
     }
+    // Only save if there are emotions recorded
+    if (emotionHistory.length > 0) {
+      //SAVEEMOTIONHISTORY IS AN API
+      await saveEmotionHistory(mindAudio);
+    }
+    
     console.log('Emotion history:', emotionHistory);
     dispatch(storeMindAudio(mindAudio));
   };
 
   const getEmoji = (emotion) => emotionEmojis[emotion] || '❓';
+
+  const token = localStorage.getItem("auth");
+  const saveEmotionHistory=async (emotions)=>{
+    try{
+      const response=await axios.post(
+        'http://localhost:5000/api/storeData',
+        {
+          // prompts: [], // Empty array since we're not storing prompts
+          // mindfulVideo: { type: '', allEmotions: [] },
+          mindfulAudio: emotions, // This will contain the current session's emotions
+          // breathVideo: { type: '', allEmotions: [] },
+          // breathAudio: { type: '', allEmotions: [] }
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+        
+
+        },
+      );
+      console.log('DATA HAS BEEN SENT SUCCESSFULLY!', response);
+    }
+    catch(error){
+      console.error('Error saving emotion data:', error);
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>

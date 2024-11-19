@@ -234,9 +234,9 @@ const BreathingVideo = () => {
     detectEmotions();
   };
 
-  const stopDetection = () => {
+  const stopDetection = async() => {
     const mindVideo = {
-      type: 'mindfulness video',
+      type: 'Breathing video',
       allEmotions: emotionHistory,
     };
 dispatch(storeMindVideo (mindVideo));
@@ -246,10 +246,46 @@ dispatch(storeMindVideo (mindVideo));
       detectionRef.current = null;
     }
 
+    if (emotionHistory.length > 0) {
+      //SAVEEMOTIONHISTORY IS AN API
+      await saveEmotionHistory(breathAudio);
+    }
+
     console.log('Emotion history:', emotionHistory);
   };
 
   const getEmoji = (emotion) => emotionEmojis[emotion] || '❓';
+
+  //CALLING AN API TO STORE DATA
+
+  const token = localStorage.getItem("auth");
+  const saveEmotionHistory=async (emotions)=>{
+    try{
+      const response=await axios.post(
+        'http://localhost:5000/api/storeData',
+        {
+          // prompts: [], // Empty array since we're not storing prompts
+          // mindfulVideo: { type: '', allEmotions: [] },
+          // mindfulAudio: { type: '', allEmotions: [] }, // This will contain the current session's emotions
+          breathVideo: emotions,
+          // breathAudio: emotions,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+        
+
+        },
+      );
+      console.log('DATA HAS BEEN SENT SUCCESSFULLY!', response);
+    }
+    catch(error){
+      console.error('Error saving emotion data:', error);
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>

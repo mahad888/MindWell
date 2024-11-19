@@ -259,16 +259,16 @@ const questions = [
   },
 ];
 
-function Questions() {
-  return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-200">
-        <div className="container mx-auto px-4 py-8">
-          <Survey questions={questions} />
-        </div>
-      </div>
-    </ThemeProvider>
-  );
-}
+// function Questions() {
+//   return (
+//     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+//       <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-200">
+//         <div className="container mx-auto px-4 py-8">
+//           <Survey questions={questions} />
+//         </div>
+//       </div>
+//     </ThemeProvider>
+//   );
+// }
 
-export default Questions;
+export default questions;

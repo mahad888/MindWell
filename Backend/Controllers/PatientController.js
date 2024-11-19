@@ -3,10 +3,10 @@ import { getOtherMember } from "../lib/helper.js";
 import Booking from "../Models/BookingSchema.js";
 import { Chat } from "../Models/ChatSchema.js";
 import Doctor from "../Models/DoctorSchema.js";
+import Assessment from "../Models/AssessmentSchema.js";
 import Patient from "../Models/PaitentSchema.js";
 import { Request } from "../Models/RequestSchema.js";
 import { deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary } from "../utils/features.js";
-
 export const updatePatient = async (req, res) => {
 
   const updateData = req.body;
@@ -349,3 +349,96 @@ export const getMyAppointments = async (req, res) => {
     res.status(500).json({ message: "Failed to get appointments" });
   }
 }
+//ADDING CONTROLLER FOR THE USER'S ASSESSMENT
+// export const createAssessment=async(req,res)=>{
+
+//   try{
+//     const { results } = req.body;
+//     const newAssessment = new Assessment({
+//       userId:req.userId,
+//       results,
+      
+//     });
+//     await newAssessment.save();
+//     res.status(201).json(newAssessment);
+
+//   }
+//   catch(e){
+//     res.status(500).json({ error: error.message });
+
+//   }
+// }
+
+
+export const createAssessment = async (req, res) => {
+  try {
+    console.log('Received request body:', req.body);
+    console.log('User ID:', req.userId);
+    
+    const { surveyResponses, results } = req.body;
+    
+    const newAssessment = new Assessment({
+      userId: req.userId,
+      surveyResponses,
+      results
+    });
+    
+    console.log('Assessment before save:', newAssessment);
+    
+    await newAssessment.save();
+    
+    res.status(201).json(newAssessment);
+  } catch (error) {
+    console.error('Assessment creation error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+};
+
+
+
+
+//GET ALL ASSESSMENTS
+export const getAssessments = async (req, res) => {
+  try {
+    const assessments = await Assessment.find().populate('userId'); // Populates user details if needed
+    res.status(200).json(assessments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+// GET SPECIFIC ASSESSMENT BY ID
+export const getAssessmentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const assessment = await Assessment.findById(id).populate('userId');
+    if (!assessment) return res.status(404).json({ message: 'Assessment not found' });
+    res.status(200).json(assessment);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+// Delete an assessment
+export const deleteAssessment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedAssessment = await Assessment.findByIdAndDelete(id);
+    if (!deletedAssessment) return res.status(404).json({ message: 'Assessment not found' });
+    res.status(200).json({ message: 'Assessment deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
+//CONTROLLER FOR THE INTERACTIVE EXERCISES
+
