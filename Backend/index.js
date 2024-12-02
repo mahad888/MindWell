@@ -134,6 +134,7 @@ app.use('/api', moodRoutes);
 app.use('/api', analyzeText);
 app.use('/api',bookingRoute)
 app.use('/api/storeData',userRoutes);
+app.use('/api/getMeditationData',userRoutes);
 
 // Socket.IO logic
 const onlineUsers = new Set();

@@ -7,7 +7,7 @@ import { authenticate, restrict } from '../Authentications/verifyToken.js';
 import { acceptRequestValidator, sendRequestValidator, validateHandler } from '../lib/validators.js';
 import { upload } from '../Middleware/multer.js';
 import { storeData } from '../Controllers/interactiveExerciseController.js';
-
+import { getData } from '../Controllers/interactiveExerciseController.js';
 const router = express.Router();
 router.use(authenticate)
 router.get('/get/myprofile',restrict(['patient']), getPatient);
@@ -41,5 +41,6 @@ router.delete('/deleteAssessment/:id', deleteAssessment)
 
 // Route for the Interactive Exercise
 router.post('/storeData', storeData);
+router.get('/getMeditationData',getData);
 
 export default router;

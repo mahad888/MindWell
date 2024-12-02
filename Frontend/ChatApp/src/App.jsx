@@ -65,6 +65,7 @@ import BreathingExercisePage from "./pages/Interactive Exercises/breathing_exerc
 import JournalingPromptsPage from "./pages/Interactive Exercises/journaling_prompts.jsx";
 import VideoCounselling from "./pages/Remote Counselling/VideoCounselling.jsx";
 import VideoCallRoom from "./pages/Remote Counselling/VideoCallRoom.jsx";
+import ProgressTracking from './pages/Progress Tracking/progress_tracking.jsx'
 
 export default function App() {
   const dispatch = useDispatch();
@@ -155,6 +156,8 @@ export default function App() {
             <Route path = 'assessment' element = {<Survey/>}/>
             <Route path = 'results' element = {<Results/>}/>
 
+            <Route path = "/progress_tracking" element = {<ProgressTracking/>}/>
+
             <Route path="/services" element={<Services />} />
             <Route path="/profile" element={<Profile />}>
             
@@ -181,6 +184,7 @@ export default function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/chats" element={<ChatManagement />} />
             <Route path="/admin/feedback" element={<FeedbackManagement />} />
+            
             <Route
               path="/admin/approval-requests"
               element={<RequestsApproval />}

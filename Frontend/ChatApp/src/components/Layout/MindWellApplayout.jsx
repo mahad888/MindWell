@@ -139,7 +139,7 @@ const MindWellAppLayout = ({ children }) => {
           {
             text: "Progress Tracking",
             icon: <TimelineIcon />,
-            path: "/progress-tracking",
+            path: "/progress_tracking",
           },
           {
             text: "Mindful Games",
