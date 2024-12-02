@@ -1,5 +1,9 @@
+import Assessment from "../Models/AssessmentSchema.js";
 import Booking from "../Models/BookingSchema.js";
 import Doctor from "../Models/DoctorSchema.js";
+import { Message } from "../Models/MessageSchema.js";
+import Post from "../Models/PostSchema.js";
+
 import { uploadFilesToCloudinary } from "../utils/features.js";
 import bcrypt from "bcrypt";
 
@@ -156,21 +160,108 @@ export const sendApprovalRequest = async (req, res) => {
 }
 
 
-export const getDoctorAppointments = async (req, res) => {  
+export const getDoctorAppointments = async (req, res) => {
   try {
-    let bookings = await Booking.find({ doctor: req.userId }).populate(
-      "patient",
-      "name avatar email gender"
-    );
-    bookings = bookings.reverse()
-    console.log(bookings)
-    if (!bookings) {
+    // Fetch bookings with 'pending' status for the logged-in doctor
+    let bookings = await Booking.find({
+      doctor: req.userId,
+      appointmentStatus: "pending",
+    }).populate("patient", "name avatar email gender");
+
+    if (!bookings || bookings.length === 0) {
       return res.status(404).json({ message: "No appointments found" });
-      console.log(bookings)
     }
+
+    // Sort bookings by the earliest time in their timeSlots
+    bookings = bookings.sort((a, b) => {
+      // Extract the earliest `startTime` from `timeSlots`, default to `Infinity` if missing
+      const earliestA = new Date(
+        a.timeSlots?.find((slot) => slot.available === false)?.startTime || Infinity
+      );
+      const earliestB = new Date(
+        b.timeSlots?.find((slot) => slot.available === false)?.startTime || Infinity
+      );
+
+      // Compare the two dates
+      return earliestA - earliestB;
+    });
+
+    // Send the sorted bookings
     res.status(200).json({ success: true, bookings });
   } catch (err) {
-    console.log(err);
+    console.error("Error fetching appointments:", err);
     res.status(500).json({ message: "Failed to get appointments" });
   }
-}
+};
+
+
+export const getAssessmentsOfPatient = async (req, res) => {
+  
+  try {
+    const { id } = req.params;
+    console.log(id)
+    const assessment = await Assessment.find({userId:id}).populate('userId');
+    console.log(assessment)
+    if (!assessment) return res.status(404).json({ message: 'Assessment not found' });
+    res.status(200).json({sucess:true ,assessment});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+export const getLast7DaysNegativePosts = async (req, res) => {
+  const {id} = req.params;
+  try {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const negativePosts = await Post.countDocuments({
+      userId:id,
+      postType: 'negative',
+      createdAt: { $gte: sevenDaysAgo },
+    });
+
+    const neutralPosts = await Post.countDocuments({
+      userId:id,
+      postType: 'neutral',
+      createdAt: { $gte: sevenDaysAgo },
+    });
+
+    return res.status(200).json({
+      negativePosts,
+      neutralPosts,
+      message: 'Successfully fetched posts from the last 7 days.',
+    });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
+export const getLast7DaysNegativeMessages = async (req, res) => {
+  const {id} = req.params;
+  try {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const negativeMessages = await Message.countDocuments({
+      sender:id,
+      messageType: 'negative',
+      createdAt: { $gte: sevenDaysAgo },
+    });
+
+    const neutralMessages = await Message.countDocuments({
+      sender:id,
+      messageType: 'neutral',
+      createdAt: { $gte: sevenDaysAgo },
+    });
+
+    return res.status(200).json({
+      negativeMessages,
+      neutralMessages,
+      message: 'Successfully fetched messages from the last 7 days.',
+    });
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+};

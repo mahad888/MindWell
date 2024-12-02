@@ -75,7 +75,7 @@ const DoctorBookingCard = ({ doctor }) => {
 
       <CardContent>
         <Typography variant="h6" sx={{ mt: 1 }}>
-          Consultation Fee: <b>${ticketPrice}</b>
+          Consultation Fee: <b>Rs{ticketPrice}</b>
         </Typography>
 
         <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>

@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Video } from 'lucide-react';
 import VideoCounselling from '../../pages/Remote Counselling/VideoCounselling';
+import PatientDetail from '../../pages/Remote Counselling/PatientDetail';
+import moment from 'moment';
 
 const AppointmentCard = ({appointment}) => {
   const {user} = useSelector((state) => state.auth);
@@ -13,6 +15,9 @@ const handleAppointment = () => {
   navigate(`/video-counselling/${appointment?.meetingCode}`)
 };
 
+const viewPatientDetail = ()=>{
+  navigate(`/doctor/patient/${appointment.patient._id}/${appointment._id}`)
+}
   return (
     <Card sx={{ maxWidth: 400, margin: 'auto', padding: 2, boxShadow: 3 }}>
       <CardContent>
@@ -35,24 +40,23 @@ const handleAppointment = () => {
             <strong>Ticket Price:</strong> ${appointment?.ticketPrice}
           </Typography>
 
-          {/* Session and Payment Status */}
-          <Typography variant="body1">
-            <strong>Session ID:</strong> {appointment?.session}
-          </Typography>
+
           <Typography variant="body1">
             <strong>Payment Status:</strong> {appointment?.isPaid ? 'Paid' : 'Unpaid'}
           </Typography>
 
-          {/* Time Slot (if available) */}
-          {/* {appointment?.timeSlot ? (
-            <Typography variant="body1">
-              <strong>Time Slot:</strong> {appointment?.timeSlot}
-            </Typography>
-          ) : (
-            <Typography variant="body1" color="textSecondary">
-              Time Slot: Not specified
-            </Typography>
-          )} */}
+{/* Time Slot (if available) */}
+{appointment?.timeSlot ? (
+  <Typography variant="body1">
+    <strong>Time Slot:</strong> {appointment?.timeSlot?.day}{" "}
+  {appointment.timeSlot.StartTime}
+  </Typography>
+) : (
+  <Typography variant="body1" color="textSecondary">
+    Time Slot: Not specified
+  </Typography>
+)}
+
 
           {/* Timestamps */}
           <Typography variant="body2" color="textSecondary">
@@ -62,8 +66,8 @@ const handleAppointment = () => {
           <Divider />
 
           {/* Action Button */}
-          <Button variant="contained" color="primary" fullWidth onClick={handleAppointment}>
-            View Appointment
+          <Button variant="contained" color="primary" fullWidth onClick={isPatient?handleAppointment:viewPatientDetail}>
+           {isPatient? 'Start Video Counselling':'View Patient Details'}
           </Button>
         </Stack>
       </CardContent>

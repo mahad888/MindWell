@@ -3,12 +3,15 @@ import axios from 'axios';
 import { Typography, Stack, CircularProgress } from '@mui/material';
 import AppointmentCardGrid from '../../components/RemoteCounseling/AppointmentCardGrid';
 import DoctorLayout from '../../components/Layout/DoctorLayout';
+import { useDispatch } from 'react-redux';
+import { setAppointments } from '../../Redux/reducers/auth';
 
 const DoctorAppointment = () => {
   const [appointment, setAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('auth');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +27,7 @@ const DoctorAppointment = () => {
           },
         });
         setAppointment(data.bookings);
+        dispatch(setAppointments(data.bookings));
         console.log(data.bookings);
 
       } catch (err) {
@@ -45,7 +49,7 @@ const DoctorAppointment = () => {
 
   if (error) return <Typography color="error">{error}</Typography>;
 
-  if (appointment?.length === 0) return <Typography>No appointment data available.</Typography>;
+  if (!appointment) return  <Typography>No appointment data available.</Typography>;
 
   return <AppointmentCardGrid appointments={appointment} />;
 };

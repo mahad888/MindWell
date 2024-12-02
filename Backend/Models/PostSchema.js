@@ -18,6 +18,11 @@ const postSchema = mongoose.Schema(
         type: String,
       },
     },
+    postType: {
+      type: String,
+      enum: ["neutral", "negative"],
+      default: "neutral",
+    },
     avatar: {
       url: String,
       public_id: {

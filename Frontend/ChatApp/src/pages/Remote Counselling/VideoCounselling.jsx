@@ -4,6 +4,7 @@ import { useInputValidation } from "6pp";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { DoctorHeader } from "../../components/Layout/DoctorLayout";
 
 const VideoCounselling = () => {
   const code = useInputValidation("");
@@ -23,15 +24,17 @@ const VideoCounselling = () => {
   const isDoctor = user.role === "doctor";
 
   return (
+    <React.Fragment>
     <Stack
       justifyContent="center"
       alignItems="center"
       sx={{
         height: "100vh",
-        background: "linear-gradient(135deg, #4c8bf5, #6a4ce9)",
+        
         padding: "20px",
       }}
     >
+
       <Paper
         elevation={6}
         sx={{
@@ -127,6 +130,7 @@ const VideoCounselling = () => {
         </Box>
       </Paper>
     </Stack>
+  </React.Fragment>
   );
 };
 

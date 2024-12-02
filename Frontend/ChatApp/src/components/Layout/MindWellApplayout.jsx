@@ -111,43 +111,16 @@ const MindWellAppLayout = ({ children }) => {
       <Toolbar />
       <List>
         {[
-          { text: "Home", icon: <HomeIcon />, path: "/mind-well" },
-          {
-            text: "AI-Powered Assessment",
-            icon: <AssessmentIcon />,
-            path: "/survey",
-          },
-          {
-            text: "Smart Chatbot",
-            icon: <ChatBubbleOutlineIcon />,
-            path: "/chatbot",
-          },
-          {
-            text: "Emotion Recognition",
-            icon: <MoodIcon />,
-            path: "/emotion-recognition",
-          },
-          {
-            text: "Interactive Exercises",
-            icon: <FitnessCenterIcon />,
-            path: "/interactive-exercises",
-          },
-          { text: "Peer Support", icon: <PeopleIcon />, path: "/chatinbox" },
-          {
-            text: "Remote Counselling",
-            icon: <ChatIcon />,
-            path: "/remote-counselling",
-          },
-          {
-            text: "Progress Tracking",
-            icon: <TimelineIcon />,
-            path: "/progress-tracking",
-          },
-          {
-            text: "Mindful Games",
-            icon: <GamesIcon />,
-            path: "/mindful-games",
-          },
+                  { text: "Home", icon: <HomeIcon sx={{ color: "#3E8EDE" }} />, path: "/mind-well" },
+                  { text: "AI-Powered Assessment", icon: <AssessmentIcon sx={{ color: "#034694" }} />, path: "/survey" },
+                  { text: "Smart Chatbot", icon: <ChatBubbleOutlineIcon sx={{ color: "#7CB9E8" }} />, path: "/chatbot" },
+                  { text: "Interactive Exercises", icon: <FitnessCenterIcon sx={{ color: "#7CB9E8" }} />, path: "/interactive-exercises" },
+                  { text: "Peer Support", icon: <PeopleIcon sx={{ color: "#034694" }} />, path: "/chatinbox" },
+                  { text: "Remote Counselling", icon: <ChatIcon sx={{ color: "#3E8EDE" }} />, path: "/remote-counselling" },
+                  { text: "Progress Tracking", icon: <TimelineIcon sx={{ color: "#034694" }} />, path: "/progress-tracking" },
+                  { text: "Mindful Games", icon: <GamesIcon sx={{ color: "#CCCCFF" }} />, path: "/mindful-games" }
+                
+          
         ].map((item, index) => (
           <ListItem
             button
@@ -175,7 +148,7 @@ const MindWellAppLayout = ({ children }) => {
           }}
         >
           <ListItemIcon>
-            <FeedbackRounded />
+            <FeedbackRounded sx={{color:"#1ca9c9"}} />
           </ListItemIcon>
           <ListItemText primary="Feedback and Ratings" />
           

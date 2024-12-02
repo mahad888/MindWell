@@ -17,6 +17,13 @@ const schema = new Schema(
       },
     ],
 
+    messageType:{
+      type: String,
+      enum: ["neutral", "negative"],
+      default: "neutral",
+    },
+
+
     sender: {
       type: Types.ObjectId,
       ref: "Patient",

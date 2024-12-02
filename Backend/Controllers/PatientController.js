@@ -335,7 +335,7 @@ export const addRemoveFriend = async (req, res) => {
 
 export const getMyAppointments = async (req, res) => {  
   try {
-    const bookings = await Booking.find({ patient: req.userId }).populate(
+    const bookings = await Booking.find({ patient: req.userId ,appointmentStatus:'pending' }).populate(
       "doctor",
       "name avatar"
     );
@@ -412,12 +412,17 @@ export const getAssessments = async (req, res) => {
 
 
 // GET SPECIFIC ASSESSMENT BY ID
-export const getAssessmentById = async (req, res) => {
+export const getAssessment = async (req, res) => {
   try {
     const { id } = req.params;
-    const assessment = await Assessment.findById(id).populate('userId');
-    if (!assessment) return res.status(404).json({ message: 'Assessment not found' });
-    res.status(200).json(assessment);
+    console.log(id)
+    const assessment = await Assessment.findById({userId:id}).populate('userId');
+    if (!assessment){
+      return res.status(404).json({ message: 'Assessment not found' });
+      console.log("Assessment not found")
+    }
+      
+    res.status(200).json({success:true, assessment});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

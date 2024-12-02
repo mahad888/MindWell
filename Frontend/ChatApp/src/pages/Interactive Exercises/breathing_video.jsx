@@ -292,7 +292,7 @@ dispatch(storeMindVideo (mindVideo));
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
         <Container maxWidth="lg">
-          <AppBar position="static" color="transparent" elevation={0}>
+          {/* <AppBar position="static" color="transparent" elevation={0}>
             <Toolbar>
               <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
                 <img src="/images/Mindwell-black.png" alt="Mindwell Logo" style={{ width: 56, height: 56, marginRight: 8 }} />
@@ -318,7 +318,7 @@ dispatch(storeMindVideo (mindVideo));
                 </IconButton>
               </Box>
             </Toolbar>
-          </AppBar>
+          </AppBar> */}
 
           <Grid container spacing={3} sx={{ mt: 3 }}>
             <Grid item xs={12} md={8}>

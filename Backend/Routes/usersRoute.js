@@ -1,8 +1,8 @@
 import express from 'express';
 
 import { updatePatient,deletePatient,getPatient,getAllPatients, searchPatient, sendFriendRequest, acceptFriendRequest, getMyNotifications, getAllFriends, getUserFriends, addRemoveFriend, getMyAppointments } from "../Controllers/PatientController.js";
-import { createAssessment,getAssessments,getAssessmentById,deleteAssessment } from '../Controllers/PatientController.js';
-import { updateDoctor,deleteDoctor,getDoctor,getAllDoctors, sendApprovalRequest, getDoctorAppointments } from "../Controllers/DoctorController.js";
+import { createAssessment,getAssessments,deleteAssessment } from '../Controllers/PatientController.js';
+import { updateDoctor,deleteDoctor,getDoctor,getAllDoctors, sendApprovalRequest, getDoctorAppointments, getAssessmentsOfPatient, getLast7DaysNegativePosts, getLast7DaysNegativeMessages } from "../Controllers/DoctorController.js";
 import { authenticate, restrict } from '../Authentications/verifyToken.js';
 import { acceptRequestValidator, sendRequestValidator, validateHandler } from '../lib/validators.js';
 import { upload } from '../Middleware/multer.js';
@@ -30,13 +30,16 @@ router.put('/updateDoctor',upload,restrict(['doctor']),updateDoctor);
 router.delete('/deleteDoctor/:id',restrict(['doctor']), deleteDoctor);
 router.put('/send/approval/request',restrict(['doctor']), sendApprovalRequest);
 router.get('/doctor/appointments',restrict(['doctor']), getDoctorAppointments);
+router.get('/doctor/patient/assessments/:id', getAssessmentsOfPatient);
+router.get('/doctor/patient/posts/:id',getLast7DaysNegativePosts)
+router.get('/doctor/patient/messages/:id',getLast7DaysNegativeMessages)
 
 //ROUTER FOR ASSESSMENTS
 // Route to post assessments
 router.post('/postAssessment', createAssessment);
 // Route to get a single assessment by ID, and all
 router.get('/getAssessment',getAssessments)
-router.get('/getAssessment:id', getAssessmentById);
+
 // Route to delete an assessment by ID
 router.delete('/deleteAssessment/:id', deleteAssessment)
 

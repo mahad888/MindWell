@@ -78,13 +78,13 @@ const MyPostWidget = ({ picturePath }) => {
       setImage(null);
       setPost("");
     } catch (error) {
-      console.error("Error posting:", error); // Catch any errors and log them
+      console.error("Error posting:", error); // Catch any errors and log the
     }
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/analyze-text",
-        { message: post },
+        { message: post ,title: "Post" },
         {
           withCredentials: true,
           headers: {

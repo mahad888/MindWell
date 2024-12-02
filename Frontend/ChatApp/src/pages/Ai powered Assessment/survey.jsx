@@ -20,6 +20,7 @@ import {
   FormControl,
   FormLabel
 } from '@mui/material';
+import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
 
 const theme = createTheme({
   palette: {
@@ -195,6 +196,7 @@ const surveyResponses = questions.map(q => {
   }
 
   return (
+    <MindWellAppLayout>
     <ThemeProvider theme={theme}>
       <Box
         sx={{
@@ -295,7 +297,9 @@ const surveyResponses = questions.map(q => {
         </Container>
       </Box>
     </ThemeProvider>
+    </MindWellAppLayout>
+
   );
 };
 
-export default Survey;
+export default Survey

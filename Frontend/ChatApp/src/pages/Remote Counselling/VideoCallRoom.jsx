@@ -7,8 +7,8 @@ const VideoCallRoom = () => {
     const {roomId} = useParams()
     const {user} = useSelector(state=>state.auth)
     const myMeeting  =  async (element)=>{
-       const appId =962887853
-       const serverSecret ="51ee8f6a58818930a59a64d4db6662b8"
+       const appId =1205572401
+       const serverSecret ="4c515a21ef210f3cc2baf93d0cd42f8a"
        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appId, serverSecret,roomId,user._id,user.name)
 
        const zp = ZegoUIKitPrebuilt.create(kitToken);

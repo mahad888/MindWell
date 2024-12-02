@@ -33,6 +33,7 @@ export const restrict = roles => async (req, res, next) => {
     let user ;
     const patient = await Patient.findById(userId);
     const doctor = await Doctor.findById(userId);
+    
 
     if(patient){
         user = patient;
@@ -40,6 +41,7 @@ export const restrict = roles => async (req, res, next) => {
     else if(doctor){
         user = doctor;
     }
+    console.log('User:', user);
     if(!roles.includes(user.role)){
         return res.status(403).json({success:false, message: 'You are not authorized to access this route' });
     }

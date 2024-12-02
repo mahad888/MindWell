@@ -16,6 +16,7 @@ import {
   createTheme,
   ThemeProvider
 } from '@mui/material';
+import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
 
 const theme = createTheme({
   palette: {
@@ -154,6 +155,7 @@ const PDFDocument = ({ responses, questions, timestamp, results }) => {
     : "Based on your responses, you are not likely to be experiencing significant symptoms of depression.";
 
   return (
+
     <Document>
       <Page size="A4" style={pdfStyles.page}>
         {/* Watermark */}
@@ -356,6 +358,7 @@ const Results = () => {
     : "Based on your responses, you are not likely to be experiencing significant symptoms of depression.";
 
   return (
+    <MindWellAppLayout>
     <ThemeProvider theme={theme}>
       <Box
         sx={{
@@ -448,7 +451,7 @@ const Results = () => {
                 <Button
                   variant="outlined"
                   startIcon={<Refresh />}
-                  onClick={() => navigate('/questions')}
+                  onClick={() => navigate('/survey')}
                 >
                   Take Survey Again
                 </Button>
@@ -479,6 +482,7 @@ const Results = () => {
         </Container>
       </Box>
     </ThemeProvider>
+    </MindWellAppLayout>
   );
 };
 

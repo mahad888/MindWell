@@ -40,7 +40,7 @@ export const getCheckOutSession = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/checkout-success`,
+      success_url: `http://localhost:5173/doctor/${doctorId}`, // Update with your frontend URL
       cancel_url: `${process.env.CLIENT_URL}/doctor/${doctorId}`,
       customer_email: patient.email,
       client_reference_id: doctorId,
@@ -73,3 +73,29 @@ export const getCheckOutSession = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to create checkout session" });
   }
 };
+
+
+export const updateBookingStatus = async (req, res) => {
+  const { appointmentId } = req.params;
+  const { status } = req.body;
+
+  try {
+    
+    const booking = await Booking.findByIdAndUpdate(appointmentId, { appointmentStatus: status }, { new: true });
+    await booking.save();
+    const doctor = await Doctor.findById(booking.doctor);
+    const timeSlot = doctor.timeSlots.id(booking.timeSlot._id); 
+    if (status === 'completed') {
+      timeSlot.available = true; 
+    } else {
+      timeSlot.available = false; 
+    }
+    await doctor.save(); 
+
+    res.status(200).json({ success: true, message: "Booking status updated successfully", booking });
+  }
+  catch (err) {
+    console.error("Error updating booking status:", err);
+    res.status(500).json({ success: false, message: "Failed to update booking status" });
+  }
+}

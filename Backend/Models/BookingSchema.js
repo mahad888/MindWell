@@ -17,6 +17,11 @@ const bookingSchema = new mongoose.Schema(
     //   type: Date,
     //   required: true,
     // },
+    appointmentStatus:{
+      type: String,
+      enum: ['pending', 'completed'],
+      default: 'pending',
+    },
     timeSlot: {
       type: Object
     },

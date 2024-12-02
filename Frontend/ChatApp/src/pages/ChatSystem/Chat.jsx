@@ -136,7 +136,7 @@ const Chat = ({chatId}) => {
       const token = localStorage.getItem("auth");
       const response = await axios.post(
         "http://localhost:5000/api/analyze-text",
-        {message},
+        {message, title: "Message"},
         {
           withCredentials: true,
           headers: {

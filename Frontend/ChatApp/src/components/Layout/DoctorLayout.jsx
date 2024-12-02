@@ -119,7 +119,7 @@ const Sidebar = () => {
 };
 
 
-const Header = () => {
+export const DoctorHeader = () => {
     const [isMobile, setIsMobile] = useState(false);
     const { user } = useSelector((state) => state.auth);
   
@@ -171,7 +171,7 @@ const Header = () => {
 const DoctorLayout = ({ children }) => {
   return (
     <>
-      <Header />
+    <DoctorHeader />
       <Grid
         container
         minHeight={"100vh"}

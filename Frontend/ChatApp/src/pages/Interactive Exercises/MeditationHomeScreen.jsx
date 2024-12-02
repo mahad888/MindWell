@@ -53,42 +53,8 @@ const MindwellHomeScreen = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #fef3c7, #fed7aa)' }}>
-        <AppBar position="static" color="transparent" elevation={0} sx={{ py: 1 }}>
-          <Container maxWidth="lg">
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 32, height: 32, borderRadius: '50%', bgcolor: 'primary.main' }} />
-                <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'primary.dark' }}>
-                  Mindwell
-                </Typography>
-              </Box>
-              {!isMobile && (
-                <Box sx={{ display: 'flex', bgcolor: 'white', borderRadius: 30, boxShadow: 1 }}>
-                  {navItems.map((item, index) => (
-                    <Button
-                      key={index}
-                      sx={{
-                        px: 2,
-                        py: 1,
-                        color: 'primary.dark',
-                        '&:hover': { bgcolor: 'primary.50' },
-                        borderRadius: index === 0 ? '30px 0 0 30px' : index === navItems.length - 1 ? '0 30px 30px 0' : 0,
-                      }}
-                    >
-                      {item}
-                    </Button>
-                  ))}
-                </Box>
-              )}
-              {isMobile && (
-                <IconButton edge="end" color="inherit" aria-label="menu">
-                  <MenuIcon />
-                </IconButton>
-              )}
-            </Box>
-          </Container>
-        </AppBar>
+      <Box sx={{ minHeight: '100vh', background: '#fff' }}>
+        
 
         <Container maxWidth="lg" sx={{ py: 8 }}>
           <Box sx={{ mb: 10, textAlign: 'center' }}>

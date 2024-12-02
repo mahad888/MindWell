@@ -71,6 +71,9 @@ import EducationalGame from "./pages/Mindful games/EducationalGame.jsx";
 import MindGames from "./pages/Mindful games/MindGames.jsx";
 import MoodManagementGame from "./pages/Mindful games/MoodManagementGame.jsx";
 import GameSelection from "./pages/Mindful games/MindfulGames.jsx";
+import Patient from "../../../Backend/Models/PaitentSchema.js";
+import PatientDetail from "./pages/Remote Counselling/PatientDetail.jsx";
+import EmotionMatchingGame from "./pages/Mindful games/EmotionMatchingGame.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -163,9 +166,8 @@ export default function App() {
             <Route path = 'results' element = {<Results/>}/>
             <Route path = 'educational-game' element = {<EducationalGame/>}/>
             <Route path = 'memory-game' element = {<MindGames/>}/>
-            <Route path = 'mood-mangement' element={<MoodManagementGame/>}/>
+            <Route path = 'mindful-games/mood-management' element={<EmotionMatchingGame/>}/>
             <Route path = 'mindful-games' element ={<GameSelection/>}/>
-
 
             <Route path="/services" element={<Services />} />
             <Route path="/profile" element={<Profile />}>
@@ -178,6 +180,7 @@ export default function App() {
             <Route path="/doctor/update-profile" element={<UpdateProfile />} />
             <Route path = "/doctor/registered-patients" element = {<Appointments/>}/>
             <Route path="/doctor/appointments" element={<DoctorAppointment/>} />
+            <Route path = '/doctor/patient/:id/:appointmentId' element = {<PatientDetail/>}/>
           </Route>
 
           {/* Public Routes */}
