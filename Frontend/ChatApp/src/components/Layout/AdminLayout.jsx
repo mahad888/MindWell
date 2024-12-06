@@ -17,8 +17,11 @@ import {
   ManageAccounts,
   Logout,
   HowToRegRounded,
+  MedicalServicesOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { adminNotExist } from "../../Redux/reducers/auth";
 
 const adminTabs = [
   {
@@ -27,10 +30,16 @@ const adminTabs = [
     path: "/admin/dashboard",
   },
   {
-    label: "Users",
+    label: "Patients",
     icon: <ManageAccounts />,
     path: "/admin/users-management",
   },
+  {
+    label: "Doctors",
+    icon: <MedicalServicesOutlined/>,
+    path: "/admin/doctors-management",
+  },
+
   {
     label: "Chats",
     icon: <Group />,
@@ -56,9 +65,11 @@ const adminTabs = [
 const Sidebar = ({ width = "100%" }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const logoutHandler = () => {
     localStorage.removeItem("token");
+    dispatch(adminNotExist)
     navigate("/admin");
   };
 

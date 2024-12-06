@@ -7,6 +7,7 @@ import { fileformat, transformImage } from "../../lib/features";
 import moment from "moment";
 import RenderAttachment from "../../components/shared/RenderAttachment";
 import { FileOpen } from "@mui/icons-material";
+import axios from "axios";
 
 const columns = [
   {
@@ -89,10 +90,30 @@ const columns = [
 
 const MessageManagement = () => {
   const [rows, setRows] = useState([]);
+  const [messages,setMessages] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:5000/api/admin/messages", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(data)
+        setMessages(data.messages.reverse());
+        console.log(data.transformedMessages);
+       
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
+ 
   useEffect(() => {
     setRows(
-      UsersDataForAdmin.messages.map((message) => ({
+      messages?.map((message) => ({
         ...message,
         id: message._id,
         content: message.content?.length>0? message.content : "No Content",
@@ -103,7 +124,7 @@ const MessageManagement = () => {
         createdAt: moment(message.createdAt).format("DD/MM/YYYY hh:mm A"),
       }))
     );
-  }, []); // Add empty dependency array to run only once
+  }, [messages]);
   console.log(rows);
 
   return (

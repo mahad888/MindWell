@@ -71,7 +71,7 @@ const OptionsDialog = ({ open, onClose, content }) => {
           {[
             { path: '/interactive-exercises', label: 'Interactive Exercises', Icon: SelfImprovementIcon, bgColor: '#e3f2fd', hoverBg: '#bbdefb' },
             { path: '/mindful-games', label: 'Mindful Games', Icon: SportsEsportsIcon, bgColor: '#e1f5fe', hoverBg: '#b3e5fc' },
-            { path: '/remote-counseling', label: 'Remote Counseling', Icon: VideoCallOutlined, bgColor: '#e8f5e9', hoverBg: '#c8e6c9' }
+            { path: '/remote-counselling', label: 'Remote Counseling', Icon: VideoCallOutlined, bgColor: '#e8f5e9', hoverBg: '#c8e6c9' }
           ].map((option, index) => (
             <Stack
               key={index}

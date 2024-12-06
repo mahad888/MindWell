@@ -4,6 +4,7 @@ import Table from "../../components/shared/Table";
 import { UsersDataForAdmin } from "../../Constants/sampleData";
 import { Avatar,AvatarGroup, Stack } from "@mui/material";
 import { transformImage } from "../../lib/features";
+import axios from "axios";
 
 
 const columns = [
@@ -109,18 +110,42 @@ const columns = [
     }
   },
 
+
 ];
 
 const ChatManagement = () => {
   const [rows, setRows] = useState([]);
+  const [chats,setChats] = useState([])
+
 
   useEffect(() => {
-    setRows(UsersDataForAdmin.chats.map((i) => ({
-      ...i,id:i._id,avatar:i.avatar,
-      members:i.members.map((item) => transformImage(item.avatar,50)),
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:5000/api/admin/chats", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        setChats(data.transformedChats.reverse());
+        console.log(data.transformedChats);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-    })));
-  },[])
+  useEffect(() => {
+    setRows(
+      chats.map((user) => ({
+        ...user,
+        id: user._id,
+        avatar: (user.avatar),
+      }))
+    );
+  }, [chats]); // Add 'patients' as a dependency
+
+
   
 
   return (

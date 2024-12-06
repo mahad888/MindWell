@@ -15,6 +15,7 @@ const MemoryGame = () => {
   const [timeLeft, setTimeLeft] = useState(timer);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameRunning, setIsGameRunning] = useState(false);
+  const [isWin, setIsWin] = useState(false);
 
   useEffect(() => {
     if (isGameRunning && timeLeft > 0) {
@@ -38,6 +39,13 @@ const MemoryGame = () => {
     }
   }, [flippedIndices]);
 
+  useEffect(() => {
+    if (matchedIndices.length === cards.length && isGameRunning) {
+      setIsWin(true);
+      setIsGameRunning(false);
+    }
+  }, [matchedIndices, cards.length, isGameRunning]);
+
   const handleClick = (index) => {
     if (
       flippedIndices.length < 2 &&
@@ -55,6 +63,7 @@ const MemoryGame = () => {
     setTimeLeft(timer);
     setIsGameOver(false);
     setIsGameRunning(true);
+    setIsWin(false);
   };
 
   return (
@@ -69,7 +78,7 @@ const MemoryGame = () => {
         you win! Good luck!
       </Typography>
 
-      {!isGameRunning && (
+      {!isGameRunning && !isWin && (
         <div style={{ marginBottom: "20px" }}>
           <Typography variant="body1" gutterBottom>
             Set your timer (in seconds):
@@ -95,10 +104,24 @@ const MemoryGame = () => {
         </Typography>
       )}
 
-      {isGameOver && (
+      {isGameOver && !isWin && (
         <Typography variant="h5" color="error" gutterBottom>
           Game Over! Time's up!
         </Typography>
+      )}
+
+      {isWin && (
+        <>
+        <Typography variant="h5" color="success" gutterBottom>
+          Congratulations! You matched all the cards!
+        </Typography>
+        <Button variant="contained" color="primary" onClick={handleStartGame}
+        style={{marginTop:"10px",marginBottom:"10px"}}
+        >
+        Start Game
+      </Button>
+      </>
+
       )}
 
       <Grid container spacing={1}>
@@ -115,7 +138,7 @@ const MemoryGame = () => {
                     : "#ccc",
               }}
               onClick={() => handleClick(index)}
-              disabled={isGameOver || !isGameRunning}
+              disabled={isGameOver || !isGameRunning || isWin}
             >
               {flippedIndices.includes(index) || matchedIndices.includes(index)
                 ? card

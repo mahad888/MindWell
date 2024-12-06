@@ -12,7 +12,7 @@ import bot from './Routes/bot.js';
 import feedback from './Routes/feedbackRoute.js';
 import moodRoutes from './Routes/moodManagementRoute.js';
 import analyzeText from './Routes/analyzeTextRoute.js';
-import displayFeedback from './Routes/adminRoute.js';
+//import adminRoutes from './Routes/adminRoute.js';
 
 import { v4 as uuid } from 'uuid';
 import { v2 as cloudinary } from 'cloudinary';
@@ -31,6 +31,7 @@ import { HfInference } from '@huggingface/inference';
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 const app = express();
 app.use(express.json());
+
 
 // import toxicity from '@tensorflow-models/toxicity'
 
@@ -121,13 +122,13 @@ cloudinary.config({
   api_secret: process.env.Cloud_API_Secret,
 });
 
-app.use('/api', displayFeedback);
+
+app.use('/api', adminRoutes);;
 app.use('/api',postRoute);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api', userRoutes);
-app.use('/api/admin', adminRoutes);
 app.use(bot);
-app.use(feedback);
+app.use(feedback)
 app.use('/api', chat);
 app.use('/api', doctorFeedbackRoute);
 app.use('/api', moodRoutes);
@@ -135,6 +136,7 @@ app.use('/api', analyzeText);
 app.use('/api',bookingRoute)
 app.use('/api',sendSMS)
 app.use('/api/storeData',userRoutes);
+app.use('/api/getMeditationData',userRoutes);
 
 // Socket.IO logic
 const onlineUsers = new Set();

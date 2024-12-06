@@ -15,6 +15,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { People as UsersIcon, Air as WindIcon, MenuBook as BookOpenIcon, Menu as MenuIcon } from '@mui/icons-material';
+import MindWellAppbar from '../../components/Layout/MindWellAppbar';
 
 const theme = createTheme({
   palette: {
@@ -51,17 +52,20 @@ const MindwellHomeScreen = () => {
   };
 
   return (
+    <>
+    <MindWellAppbar  />
     <ThemeProvider theme={theme}>
+     
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', background: '#fff' }}>
         
 
         <Container maxWidth="lg" sx={{ py: 8 }}>
           <Box sx={{ mb: 10, textAlign: 'center' }}>
-            <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold', color: 'primary.dark', mb: 3, lineHeight: 1.2 }}>
+            <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold', color: 'black', mb: 3, lineHeight: 1.2 }}>
               Nurture Your<br />Mind, Body, and Soul
             </Typography>
-            <Typography variant="h5" sx={{ color: 'primary.dark', mb: 5, maxWidth: 'md', mx: 'auto' }}>
+            <Typography variant="h5" sx={{ color: 'black', mb: 5, maxWidth: 'md', mx: 'auto' }}>
               Embark on a transformative journey of self-discovery and inner peace. Choose your path to tranquility and mindfulness.
             </Typography>
             <Box sx={{ width: 96, height: 4, bgcolor: 'primary.main', mx: 'auto', borderRadius: 2 }} />
@@ -142,6 +146,7 @@ const MindwellHomeScreen = () => {
         </Box>
       </Box>
     </ThemeProvider>
+    </>
   );
 };
 

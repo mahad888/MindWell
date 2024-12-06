@@ -180,6 +180,11 @@ const Feedback = () => {
           onChange={(event, newValue) =>
             handleRatingChange(event, newValue, item.name)
           }
+          sx={{
+            "& .MuiRating-icon": {
+              fontSize: "1.5rem", // Adjust size
+            },
+          }}
         />
       </Box>
     ))}

@@ -45,9 +45,9 @@ const Groups = () => {
     useRenameGroupMutation
   );
 
-  const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
-    useRemoveGroupMemberMutation
-  );
+  // const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
+  //   useRemoveGroupMemberMutation
+  // );
 
   const [deleteGroup, isLoadingDeleteGroup] = useAsyncMutation(
     useDeleteChatMutation
@@ -99,19 +99,7 @@ const navigateBack = () => {
     console.log(groupNameUpdated);
     // setGroupName(groupNameUpdated)
   };
-  useEffect(() => {
-    if(chatId){
-      setGroupName(`Group Name ${chatId}`);
-    setGroupNameUpdated(`Group Name ${chatId}`);
-
-    }
-    
-    return () => {
-      setGroupName("");
-      setGroupNameUpdated("");
-      setIsEdit(false);
-    };
-  }, [chatId]);
+  
 
   const deleteHandler = () => {
     console.log("Delete");
@@ -125,11 +113,6 @@ const navigateBack = () => {
     });
   };
 
-  
-
-  
-
-
   const ConfirmDeletehandler = () => {
     setConfirmDeleteDialog(true);
     console.log("Delete");  
@@ -141,9 +124,23 @@ const navigateBack = () => {
   const closeConfirmDeletehandler = () => {
     setConfirmDeleteDialog(false);
   }
-  const removeMemberHandler = (id) => {
-    console.log("Remove Member", id);
-  }
+  // const removeMemberHandler = (userId) => {
+  //   removeMember('Removing Member..',{chatId,userId})
+  // }
+
+  useEffect(() => {
+    if(chatId){
+      setGroupName(`Group Name ${chatId}`);
+    setGroupNameUpdated(`Group Name ${chatId}`);
+
+    }
+    
+    return () => {
+      setGroupName("");
+      setGroupNameUpdated("");
+      setIsEdit(false);
+    };
+  }, [chatId]);
 
   const IconBtns = () => {
     return (
@@ -297,8 +294,9 @@ const navigateBack = () => {
               height={"50vh"}
               overflow={"auto"}
             >
+              {/* removeMemberHandler(user._id) */}
               {members?.map((user) => (
-                <UserListItem key={user._id} user={user} isAdded handler={removeMemberHandler(user._id)} styling={
+                <UserListItem key={user._id} user={user} isAdded handler={''} styling={
                   {
                     boxShadow: "0 0 5px 0 #ccc",
                     padding: "1rem 2rem",

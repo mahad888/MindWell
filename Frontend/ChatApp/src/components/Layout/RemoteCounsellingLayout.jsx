@@ -11,7 +11,7 @@ const RemoteCounsellingLayout = (WrappedComponent) => {
         <Stack>
           <WrappedComponent {...props} />
         </Stack>
-        <RemoteC_footer />
+      
       </div>
     );
   };

@@ -40,33 +40,33 @@ const columns = [
     width: 140,
   },
   {
-    field: "friends",
+    field: "appointmentFee",
     headerClassName: "table-header",
-    headerName: "Friends",
+    headerName: "Appointment Fee",
     width: 140,
   },
   {
-    field: "groups",
+    field: "approvalStatus",
     headerClassName: "table-header",
-    headerName: "Groups",
+    headerName: "Approval Status",
     width: 140,
   },
 ];
 
-const UserManagement = () => {
+const DoctorManagement = () => {
   const [rows, setRows] = useState([]);
-  const [patients, setPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/admin/patients", {
+        const { data } = await axios.get("http://localhost:5000/api/admin/doctors", {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        setPatients(data.transformedPatients.reverse());
-        console.log(data.transformedPatients);
+        setDoctors(data.doctors.reverse());
+        console.log(data.doctors);
       } catch (error) {
         console.error("Error fetching patients:", error);
       }
@@ -76,19 +76,22 @@ const UserManagement = () => {
 
   useEffect(() => {
     setRows(
-      patients.map((user) => ({
+      doctors.map((user) => ({
         ...user,
         id: user._id,
-        avatar: transformImage(user.avatar, 50),
+        avatar: transformImage(user?.avatar?.url, 50),
+        appointmentfee:user.appointmentFee,
+        approvalStatus:user.isApproved
+
       }))
     );
-  }, [patients]); // Add 'patients' as a dependency
+  }, [doctors]); // Add 'patients' as a dependency
 
   return (
     <AdminLayout>
-      <Table heading={"All Patients"} columns={columns} rows={rows} />
+      <Table heading={"All Doctors"} columns={columns} rows={rows} />
     </AdminLayout>
   );
 };
 
-export default UserManagement;
+export default DoctorManagement;

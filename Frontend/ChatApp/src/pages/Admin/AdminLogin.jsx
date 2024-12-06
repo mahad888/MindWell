@@ -8,7 +8,6 @@ import {
   Typography,
   IconButton,
   InputAdornment,
-  Link,
   Box,
 } from "@mui/material";
 import { useInputValidation } from "6pp";
@@ -18,27 +17,55 @@ import { passwordValidator } from "../../utils/validators";
 import axios from "axios";
 
 import logo from "../../assets/images/logo.png";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { adminExist } from "../../Redux/reducers/auth";
 
-const isAdmin = true
+const isAdmin = true;
+
 const AdminLogin = () => {
   const password = useInputValidation("", passwordValidator);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
-    e.preventDefault();}
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/admin/auth/login",
+        { secretKey: password.value },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        localStorage.setItem("auth", data.token);
+        dispatch(adminExist(data));
+        toast.success(data.message);
+        navigate("/admin/dashboard");
+      } else {
+        toast.error(data.message || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(
+        error?.response?.data?.message || "Login failed. Please try again."
+      );
+    }
+  };
 
   const handlePasswordVisibilityToggle = () => {
     setShowPassword(!showPassword);
   };
-  useEffect(() => {
-    if(isAdmin){
-      return navigate("/admin/dashboard");
-   }
-  })
 
   
-    
+
   return (
     <Grid container spacing={0} sx={{ height: "100vh" }}>
       <Grid
@@ -62,11 +89,9 @@ const AdminLogin = () => {
             flexDirection: "column",
             width: "100%",
             padding: 2,
-            position: 'absolute',
-            top:25,
-            marginBottom:"20px",
-            mt:-3
-            
+            position: "absolute",
+            top: 25,
+            marginBottom: "20px",
           }}
         >
           <img src={logo} alt="MindWell" style={{ width: 200, height: 100 }} />
@@ -79,7 +104,7 @@ const AdminLogin = () => {
             alignItems: "center",
             justifyContent: "center",
             borderRadius: "20px",
-            height: "100%", 
+            height: "100%",
           }}
         >
           <Paper
@@ -93,11 +118,15 @@ const AdminLogin = () => {
               backgroundColor: "#f5f5f5",
             }}
           >
-            <Typography component="h1" variant="h5" textAlign="center" marginBottom={2}>
-              Login
+            <Typography
+              component="h1"
+              variant="h5"
+              textAlign="center"
+              marginBottom={2}
+            >
+              Admin Login
             </Typography>
             <form onSubmit={handleLogin} style={{ width: "100%" }}>
-              
               <TextField
                 required
                 fullWidth
@@ -110,7 +139,10 @@ const AdminLogin = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handlePasswordVisibilityToggle} edge="end">
+                      <IconButton
+                        onClick={handlePasswordVisibilityToggle}
+                        edge="end"
+                      >
                         {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
@@ -121,19 +153,24 @@ const AdminLogin = () => {
                 variant="contained"
                 fullWidth
                 type="submit"
-                sx={{ marginTop: 2, backgroundColor:'#4C7E80',fontSize:'16px', height:'50px', color:'white', padding: '10px 20px', borderRadius: '20px'}}
+                sx={{
+                  marginTop: 2,
+                  backgroundColor: "#4C7E80",
+                  fontSize: "16px",
+                  height: "50px",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "20px",
+                }}
               >
                 Login
               </Button>
-              
-              
             </form>
           </Paper>
         </Container>
-       
       </Grid>
     </Grid>
   );
 };
 
-export default  AdminLogin;
+export default AdminLogin;

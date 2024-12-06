@@ -21,6 +21,7 @@ export const uploadFilesToCloudinary = async (files = []) => {
           getBase64(file), // Assuming getBase64 converts the file to base64 string
           {
             resource_type: 'auto',
+            timeout: 120000, 
             public_id: uuid(), // Generate a unique public_id
           },
           (error, result) => {

@@ -161,6 +161,7 @@ export const addMembers = async (req, res) => {
 
 export const removeMembers = async (req, res, next) => {
   const { userId, chatId } = req.body;
+  console.log(userId,chatId)
   try {
     const [chat, userThatWillBeRemoved] = await Promise.all([
       Chat.findById(chatId),

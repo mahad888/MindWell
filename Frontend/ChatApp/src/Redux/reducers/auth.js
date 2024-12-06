@@ -4,6 +4,7 @@ const  authSlice =  createSlice({
     name: 'auth',
     initialState: {
         user: null,
+        admin:null,
         isAdmin: false,
         loader: true,
         role: null,
@@ -22,6 +23,13 @@ const  authSlice =  createSlice({
             state.loader=false;
             console.log("User set in state:", action.payload);
 
+        },
+        adminExist:(state,action)=>{
+          state.admin = action.payload;
+
+        },
+        adminNotExist:(state,action)=>{
+          state.admin = null
         },
         setRole(state, action){
             state.role = action.payload;
@@ -62,4 +70,4 @@ const  authSlice =  createSlice({
 });
 
 export default authSlice;
-export const {setUserFromStorage,setRole,userExist, userNotExist,setFriends,setPosts,setPost,setMode,setFeedback,setAppointments} = authSlice.actions;
+export const {setUserFromStorage,setRole,userExist, userNotExist,setFriends,setPosts,setPost,setMode,setFeedback,setAppointments,adminExist,adminNotExist} = authSlice.actions;

@@ -49,7 +49,7 @@ const viewPatientDetail = ()=>{
 {appointment?.timeSlot ? (
   <Typography variant="body1">
     <strong>Time Slot:</strong> {appointment?.timeSlot?.day}{" "}
-  {appointment.timeSlot.StartTime}
+  {new Date (appointment.timeSlot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{new Date (appointment.timeSlot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
   </Typography>
 ) : (
   <Typography variant="body1" color="textSecondary">

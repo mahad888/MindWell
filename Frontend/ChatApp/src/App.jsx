@@ -74,6 +74,8 @@ import GameSelection from "./pages/Mindful games/MindfulGames.jsx";
 import Patient from "../../../Backend/Models/PaitentSchema.js";
 import PatientDetail from "./pages/Remote Counselling/PatientDetail.jsx";
 import EmotionMatchingGame from "./pages/Mindful games/EmotionMatchingGame.jsx";
+import ProgressTracking from './pages/Progress Tracking/progress_tracking.jsx'
+import DoctorManagement from "./pages/Admin/DoctorsManagement.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -169,6 +171,8 @@ export default function App() {
             <Route path = 'mindful-games/mood-management' element={<EmotionMatchingGame/>}/>
             <Route path = 'mindful-games' element ={<GameSelection/>}/>
 
+            <Route path = "/progress_tracking" element = {<ProgressTracking/>}/>
+
             <Route path="/services" element={<Services />} />
             <Route path="/profile" element={<Profile />}>
             
@@ -197,6 +201,7 @@ export default function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/chats" element={<ChatManagement />} />
             <Route path="/admin/feedback" element={<FeedbackManagement />} />
+            
             <Route
               path="/admin/approval-requests"
               element={<RequestsApproval />}
@@ -205,6 +210,8 @@ export default function App() {
               path="/admin/users-management"
               element={<UserManagement />}
             />
+            <Route path="/admin/doctors-management" element={<DoctorManagement />} />
+
             <Route path="/admin/messages" element={<Messages />} />
           </Route>
 

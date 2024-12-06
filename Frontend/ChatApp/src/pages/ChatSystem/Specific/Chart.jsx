@@ -59,7 +59,7 @@ export const LineChart = ({ value }) => {
         labels: getlast7days(),
         datasets: [
           {
-            label: "Revenue ",
+            label: "Appointments ",
             data: value,
             fill: true,
             borderColor: ["rgba(255,206,86,0.7)"],

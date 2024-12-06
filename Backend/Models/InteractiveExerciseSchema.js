@@ -22,6 +22,10 @@ const InteractiveExerciseSchema = new mongoose.Schema({
     type: { type: String, default: '' },
     allEmotions: [{ type: mongoose.Schema.Types.Mixed }]
   },
+  
+
+  
+
 }, { timestamps: true });
 
 // Change to ES6 export

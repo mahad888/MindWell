@@ -46,11 +46,13 @@ import {
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import logo from "../../assets/images/logo.png";
 import { setMode, userNotExist } from "../../Redux/reducers/auth";
 import FeedbackRounded from "@mui/icons-material/FeedbackRounded";
 import { setIsEditProfile, setIsFeedback } from "../../Redux/reducers/misc";
 import EditProfile from "../../pages/ChatSystem/Specific/EditProfile";
+import MindWellAppbar from "./MindWellAppbar";
+import logo from "../../assets/images/logo.png";
+
   const Feedback = lazy(() => import( "../../pages/Feedback"))
   // import Feedback from "../../pages/Feedback";
 
@@ -117,7 +119,7 @@ const MindWellAppLayout = ({ children }) => {
                   { text: "Interactive Exercises", icon: <FitnessCenterIcon sx={{ color: "#7CB9E8" }} />, path: "/interactive-exercises" },
                   { text: "Peer Support", icon: <PeopleIcon sx={{ color: "#034694" }} />, path: "/chatinbox" },
                   { text: "Remote Counselling", icon: <ChatIcon sx={{ color: "#3E8EDE" }} />, path: "/remote-counselling" },
-                  { text: "Progress Tracking", icon: <TimelineIcon sx={{ color: "#034694" }} />, path: "/progress-tracking" },
+                  { text: "Progress Tracking", icon: <TimelineIcon sx={{ color: "#034694" }} />, path: "/progress_tracking" },
                   { text: "Mindful Games", icon: <GamesIcon sx={{ color: "#CCCCFF" }} />, path: "/mindful-games" }
                 
           
@@ -182,7 +184,8 @@ const MindWellAppLayout = ({ children }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar
+
+     <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
@@ -212,39 +215,7 @@ const MindWellAppLayout = ({ children }) => {
             <MessageRounded sx={{ fontSize: "25px", color: "black", mr: 2 }} />
           </IconButton>
 
-          {/* Popover for Message List */}
-          {/* <Popover
-            
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-          >
-            <Paper sx={{ width: "300px", maxHeight: "400px" }}>
-              <Typography variant="h6" sx={{ padding: "0.5rem" }}>
-                Messages
-              </Typography>
-              <List>
-                {/* Example message items */}
-          {/* <ListItem button>
-                  <ListItemText primary="Message from John" secondary="Hey, how are you?" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Meeting Reminder" secondary="Don't forget our meeting at 5pm." />
-                </ListItem>
-                <ListItem button>
-                  <ListItemText primary="New Task Assigned" secondary="You have a new task: Design UI" />
-                </ListItem>
-              </List>
-            </Paper>
-          </Popover> */}
+
 
           <Notifications sx={{ fontSize: "25px", mr: 2 }} />
           <Help sx={{ fontSize: "25px", mr: 2 }} />
@@ -261,6 +232,8 @@ const MindWellAppLayout = ({ children }) => {
 )}
         </Toolbar>
       </AppBar>
+  
+       
 
       <Grid container>
       <Box sx={{ display: 'flex', width: '100%' }}>
