@@ -25,7 +25,7 @@ import DoctorLayout from "../../components/Layout/DoctorLayout";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import S from "string";
+
 import { userExist } from "../../Redux/reducers/auth";
 
 const specializationOptions = [

@@ -66,6 +66,7 @@ import JournalingPromptsPage from "./pages/Interactive Exercises/journaling_prom
 import VideoCounselling from "./pages/Remote Counselling/VideoCounselling.jsx";
 import VideoCallRoom from "./pages/Remote Counselling/VideoCallRoom.jsx";
 import ProgressTracking from './pages/Progress Tracking/progress_tracking.jsx'
+import MediaUpload from "./pages/Admin/upload.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -160,6 +161,10 @@ export default function App() {
 
             <Route path="/services" element={<Services />} />
             <Route path="/profile" element={<Profile />}>
+            {/* <Route
+              path="/admin/upload"
+              element={<MediaUpload />}
+            /> */}
             
             </Route>
             <Route path="/mind-well" element={<HomePage />}>
@@ -184,6 +189,8 @@ export default function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/chats" element={<ChatManagement />} />
             <Route path="/admin/feedback" element={<FeedbackManagement />} />
+            <Route path="/admin/upload" element={<MediaUpload />} />
+
             
             <Route
               path="/admin/approval-requests"
