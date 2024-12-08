@@ -24,7 +24,7 @@ const DoctorBookingCard = ({ doctor }) => {
   const navigate = useNavigate();
   const { timeSlots, appointmentFee, name, avatar } = doctor;
 
-  const [selectedSlot, setSelectedSlot] = useState(null); // Use slot for tracking selection
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -73,7 +73,16 @@ const DoctorBookingCard = ({ doctor }) => {
   };
 
   return (
-    <Card sx={{ padding: 3, marginTop: 4, boxShadow: 4, maxWidth: "40rem", height:"30rem", overflow:'auto' }}>
+    <Card
+      sx={{
+        padding: 3,
+        marginTop: 4,
+        boxShadow: 4,
+        maxWidth: "40rem",
+        height: "30rem",
+        overflow: "auto",
+      }}
+    >
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={2}>
           <Avatar
@@ -89,7 +98,7 @@ const DoctorBookingCard = ({ doctor }) => {
 
       <CardContent>
         <Typography variant="h6" sx={{ mt: 1 }}>
-          Consultation Fee: <b>Rs{appointmentFee}</b>
+          Consultation Fee: <b>Rs {appointmentFee}</b>
         </Typography>
 
         <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
@@ -109,7 +118,9 @@ const DoctorBookingCard = ({ doctor }) => {
               <Box
                 sx={{ display: "flex", flexDirection: "column", gap: "8px" }}
               >
-                <Typography variant="body1"><strong>{slot.day}</strong></Typography>
+                <Typography variant="body1">
+                  <strong>{slot.day}</strong>
+                </Typography>
                 <Typography variant="body2">
                   {new Date(slot.startTime).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -168,12 +179,20 @@ const DoctorBookingCard = ({ doctor }) => {
         <DialogContent>
           <Typography>
             You are about to book an appointment with Dr. {name} for the
-            selected slot:{" "}
+            selected slot:
+            <br />
             <b>
-              {selectedSlot?.day} {selectedSlot?.startTime} -{" "}
-              {selectedSlot?.endTime}
+              {selectedSlot?.day},{" "}
+              {new Date(selectedSlot?.startTime).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              -{" "}
+              {new Date(selectedSlot?.endTime).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </b>
-            .
           </Typography>
         </DialogContent>
         <DialogActions>

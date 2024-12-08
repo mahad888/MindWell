@@ -8,13 +8,6 @@ const multerUpload = multer({
   },
 });
 
-const multerUploadVideo = multer({
-  storage: multer.memoryStorage(), // Store files in memory
-  limits: {
-    fileSize: 1024 * 1024 * 50, // Limit size to 50MB
-  },
-});
-
 
 const upload = multerUpload.single("avatar");
 const video = multerUpload.single("video");

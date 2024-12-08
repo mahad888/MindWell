@@ -35,7 +35,7 @@ const FeedbackManagement = () => {
             Authorization: `Bearer ${token}`
           },
         });
-        setFeedbacks(response.data)
+        setFeedbacks(response.data.reverse());
         console.log(response.data)
       
       } catch (error) {

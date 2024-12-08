@@ -18,6 +18,7 @@ import {
   Logout,
   HowToRegRounded,
   MedicalServicesOutlined,
+  Upload,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -59,6 +60,11 @@ const adminTabs = [
     label: "Approval Requests",
     icon: <HowToRegRounded />,
     path: "/admin/approval-requests",
+  },
+  {
+    label: "Uploading",
+    icon: <Upload />,
+    path: "/admin/upload",
   },
 ];
 

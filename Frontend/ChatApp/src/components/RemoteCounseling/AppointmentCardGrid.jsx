@@ -37,7 +37,7 @@ const viewPatientDetail = ()=>{
 
           {/* Ticket Price */}
           <Typography variant="body1">
-            <strong>Ticket Price:</strong> ${appointment?.ticketPrice}
+            <strong>Ticket Price:</strong> Rs {appointment?.ticketPrice}
           </Typography>
 
 

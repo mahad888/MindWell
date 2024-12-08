@@ -650,8 +650,6 @@
 
 
 
-
-
 import React, { useEffect, useState } from 'react';
 import {
   Box,
@@ -664,7 +662,10 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent
 } from '@mui/material';
 import {
   BarChart,
@@ -673,12 +674,179 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip as RechartsTooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  Legend
 } from 'recharts';
 import InfoIcon from '@mui/icons-material/Info';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+
+const EmotionComparisonChart = ({ sessions }) => {
+  const theme = useTheme();
+
+  // Predefined list of emotions to track
+  const emotionTypes = ['happy', 'sad', 'neutral', 'excited', 'calm', 'anxious', 'angry', 'surprised'];
+
+  // Function to calculate emotion percentages
+  const calculateEmotionPercentages = (session) => {
+    const allEmotions = [
+      ...(session.breathingAudio?.allEmotions || []),
+      ...(session.breathingVideo?.allEmotions || []),
+      ...(session.mindfulnessAudio?.allEmotions || []),
+      ...(session.mindfulnessVideo?.allEmotions || [])
+    ];
+
+    const totalEmotions = allEmotions.length;
+
+    return emotionTypes.map(emotion => ({
+      emotion,
+      percentage: Math.round((allEmotions.filter(e => e.toLowerCase() === emotion).length / totalEmotions) * 100) || 0
+    }));
+  };
+
+  // Prepare data for comparison
+  const emotionData = sessions.map((session, index) => ({
+    date: new Date(session.date).toLocaleDateString(),
+    ...Object.fromEntries(
+      calculateEmotionPercentages(session).map(e => [e.emotion, e.percentage])
+    ),
+    sessionIndex: index + 1
+  }));
+
+  // Color mapping for emotions
+  const getEmotionColor = (emotion) => {
+    const colorMap = {
+      'happy': theme.palette.success.main,
+      'sad': theme.palette.error.main,
+      'neutral': theme.palette.grey[500],
+      'excited': theme.palette.warning.main,
+      'calm': theme.palette.info.main,
+      'anxious': theme.palette.error.light,
+      'angry': theme.palette.error.dark,
+      'surprised': theme.palette.secondary.main
+    };
+    return colorMap[emotion] || theme.palette.text.secondary;
+  };
+
+  return (
+    <Card sx={{ boxShadow: 3, mt: 3 }}>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Emotion Progression Comparison
+        </Typography>
+        <Box sx={{ height: 400, width: '100%' }}>
+          <ResponsiveContainer>
+            <LineChart data={emotionData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }} />
+              <RechartsTooltip />
+              <Legend />
+              {emotionTypes.map((emotion, index) => (
+                <Line
+                  key={emotion}
+                  type="monotone"
+                  dataKey={emotion}
+                  stroke={getEmotionColor(emotion)}
+                  activeDot={{ r: 8 }}
+                  name={emotion.charAt(0).toUpperCase() + emotion.slice(1)}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </Box>
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {emotionTypes.map((emotion) => (
+            <Box 
+              key={emotion} 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                mr: 2, 
+                mb: 1 
+              }}
+            >
+              <Box 
+                sx={{ 
+                  width: 15, 
+                  height: 15, 
+                  backgroundColor: getEmotionColor(emotion), 
+                  mr: 1,
+                  borderRadius: '50%'
+                }} 
+              />
+              <Typography variant="body2">
+                {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};
+
+const EmotionPieChart = ({ emotions }) => {
+  // Count emotion frequencies
+  const emotionCounts = emotions.reduce((acc, emotion) => {
+    acc[emotion] = (acc[emotion] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Convert to chart-friendly format
+  const chartData = Object.entries(emotionCounts).map(([emotion, count]) => ({
+    name: emotion,
+    value: count
+  })).sort((a, b) => b.value - a.value);
+
+  const getEmotionColor = (emotion) => {
+    const colorMap = {
+      'happy': '#4CAF50',
+      'sad': '#2196F3',
+      'excited': '#FF9800',
+      'calm': '#9C27B0',
+      'neutral': '#607D8B',
+      'anxious': '#F44336',
+      'frustrated': '#FF5722',
+      'relaxed': '#00BCD4'
+    };
+    return colorMap[emotion.toLowerCase()] || '#grey';
+  };
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2 }}>Emotion Breakdown</Typography>
+      {chartData.map((entry) => (
+        <Box 
+          key={entry.name} 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            width: '100%', 
+            mb: 1 
+          }}
+        >
+          <Box 
+            sx={{ 
+              width: 20, 
+              height: 20, 
+              backgroundColor: getEmotionColor(entry.name), 
+              mr: 2,
+              borderRadius: '50%'
+            }} 
+          />
+          <Typography variant="body2">
+            {entry.name}: {entry.value}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+  );
+};
 
 const ProgressTracking = () => {
   const theme = useTheme();
@@ -686,6 +854,8 @@ const ProgressTracking = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [dateRange, setDateRange] = useState('last7Days');
+  const [selectedDayEmotions, setSelectedDayEmotions] = useState(null);
+  const [openEmotionsDialog, setOpenEmotionsDialog] = useState(false);
   const [stats, setStats] = useState({
     totalSessions: 0,
     totalEmotions: 0,
@@ -759,10 +929,12 @@ const ProgressTracking = () => {
 
     return filteredData.map(session => ({
       date: new Date(session.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      originalDate: session.date,
       breathingAudio: session.breathingAudio?.allEmotions?.length || 0,
       breathingVideo: session.breathingVideo?.allEmotions?.length || 0,
       mindfulnessAudio: session.mindfulnessAudio?.allEmotions?.length || 0,
-      mindfulnessVideo: session.mindfulnessVideo?.allEmotions?.length || 0
+      mindfulnessVideo: session.mindfulnessVideo?.allEmotions?.length || 0,
+      session: session
     }));
   };
 
@@ -781,6 +953,29 @@ const ProgressTracking = () => {
         return data.filter(session => new Date(session.date) >= oneMonthAgo);
       default:
         return data;
+    }
+  };
+
+  // Method to get recent sessions for Emotion Comparison Chart
+  const getRecentSessions = () => {
+    if (!data) return [];
+    
+    // Sort sessions by date in descending order and take last 5
+    return data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  };
+
+  const handleBarClick = (data) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const session = data.activePayload[0].payload.session;
+      const allEmotions = [
+        ...(session.breathingAudio?.allEmotions || []),
+        ...(session.breathingVideo?.allEmotions || []),
+        ...(session.mindfulnessAudio?.allEmotions || []),
+        ...(session.mindfulnessVideo?.allEmotions || [])
+      ];
+      
+      setSelectedDayEmotions(allEmotions);
+      setOpenEmotionsDialog(true);
     }
   };
 
@@ -894,7 +1089,10 @@ const ProgressTracking = () => {
               </Typography>
               <Box sx={{ height: 400 }}>
                 <ResponsiveContainer>
-                  <BarChart data={prepareChartData()}>
+                  <BarChart 
+                    data={prepareChartData()}
+                    onClick={handleBarClick}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
@@ -909,6 +1107,13 @@ const ProgressTracking = () => {
             </CardContent>
           </Card>
         </Grid>
+
+        {/* Emotion Comparison Chart */}
+        {data && data.length > 1 && (
+          <Grid item xs={12}>
+            <EmotionComparisonChart sessions={getRecentSessions()} />
+          </Grid>
+        )}
 
         {/* Journal Entries */}
         <Grid item xs={12}>
@@ -946,6 +1151,21 @@ const ProgressTracking = () => {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Emotions Dialog */}
+      <Dialog 
+        open={openEmotionsDialog} 
+        onClose={() => setOpenEmotionsDialog(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>
+          Emotions for {selectedDayEmotions && new Date(selectedDayEmotions[0]?.date || Date.now()).toLocaleDateString()}
+        </DialogTitle>
+        <DialogContent>
+          {selectedDayEmotions && <EmotionPieChart emotions={selectedDayEmotions} />}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

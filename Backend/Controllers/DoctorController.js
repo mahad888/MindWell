@@ -265,3 +265,15 @@ export const getLast7DaysNegativeMessages = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
+
+
+export const getProgressTrackings = async (req, res) => {
+  const {id} = req.params;
+  try {
+    const progressTrackings = await ProgressTracking.find({userId:id});
+    if (!progressTrackings) return res.status(404).json({ message: 'Progress Trackings not found' });
+    res.status(200).json({sucess:true ,progressTrackings});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
