@@ -17,7 +17,7 @@ const DoctorAppointment = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch appointment details
         const { data } = await axios.get(`http://localhost:5000/api/doctor/appointments`, {
           withCredentials: true,
@@ -26,30 +26,46 @@ const DoctorAppointment = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setAppointment(data.bookings);
-        dispatch(setAppointments(data.bookings));
-        console.log(data.bookings);
 
+        if (!data.bookings || data.bookings.length === 0) {
+          setError('No appointments available.');
+        } else {
+          setAppointment(data.bookings);
+          dispatch(setAppointments(data.bookings));
+          console.log(data.bookings);
+        }
       } catch (err) {
         console.error(err);
         setError('Error fetching data.');
+        if (err.response?.status === 404) {
+          setError('No appointments available.');
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [token]);
+  }, [token, dispatch]);
 
-  if (loading) return (
-    <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
-      <CircularProgress />
-    </Stack>
-  );
+  if (loading)
+    return (
+      <Stack alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
+        <CircularProgress />
+      </Stack>
+    );
 
-  if (error) return <Typography color="error">{error}</Typography>;
-
-  if (!appointment) return  <Typography>No appointment data available.</Typography>;
+  if (error)
+    return (
+      <Typography
+        color="textSecondary"
+        variant="h6"
+        align="center"
+        marginTop="2rem"
+      >
+        {error}
+      </Typography>
+    );
 
   return <AppointmentCardGrid appointments={appointment} />;
 };

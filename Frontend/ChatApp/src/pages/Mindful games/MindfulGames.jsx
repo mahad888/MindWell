@@ -6,6 +6,7 @@ import MoodIcon from '@mui/icons-material/Mood';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
+import { Colorize } from '@mui/icons-material';
 
 const GameCard = styled(Card)(({ theme }) => ({
   maxWidth: 300,
@@ -25,7 +26,7 @@ const GameSelection = () => {
 
   const gameOptions = [
     {
-      title: 'Educational Games',
+      title: 'Educational Game',
       icon: <SportsEsportsIcon fontSize="large" sx={{ color: '#2196F3' }} />,
       description: 'Boost your knowledge with fun and interactive learning games.',
       route: '/educational-game',
@@ -37,11 +38,23 @@ const GameSelection = () => {
       route: '/memory-game',
     },
     {
-      title: 'Mood Management Games',
+      title: 'Mood Management Game',
       icon: <MoodIcon fontSize="large" sx={{ color: '#FFB300' }} />,
       description: 'Manage your mood and feel more balanced with relaxing games.',
       route: 'mood-management',
     },
+    {
+      title: 'Virtual Coloring Book',
+      icon: <Colorize fontSize="large" sx={{ color: '#FFB300' }} />,
+      description: 'Unleash your creativity with our interactive Virtual Coloring Book ',
+      route: 'mandala-coloring',
+    },
+    {
+      title: 'Breathing Excercise',
+      icon: <MoodIcon fontSize="large" sx={{ color: '#FFB300' }} />,
+      description: 'Breathing excercise for stress relief', 
+      route: 'breathing-exercise',
+    }
   ];
 
   const handleCardClick = (route) => {

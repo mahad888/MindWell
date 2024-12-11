@@ -12,6 +12,7 @@ import bot from './Routes/bot.js';
 import feedback from './Routes/feedbackRoute.js';
 import moodRoutes from './Routes/moodManagementRoute.js';
 import analyzeText from './Routes/analyzeTextRoute.js';
+import {handleStripeWebhook} from './Controllers/stripeWebhook.js';
 //import adminRoutes from './Routes/adminRoute.js';
 
 import { v4 as uuid } from 'uuid';
@@ -122,6 +123,7 @@ cloudinary.config({
   api_secret: process.env.Cloud_API_Secret,
 });
 
+app.post("/api/webhook", express.raw({ type: "application/json" }), handleStripeWebhook);
 
 app.use('/api', adminRoutes);;
 app.use('/api',postRoute);

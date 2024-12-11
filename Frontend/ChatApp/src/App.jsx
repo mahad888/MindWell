@@ -76,6 +76,9 @@ import PatientDetail from "./pages/Remote Counselling/PatientDetail.jsx";
 import EmotionMatchingGame from "./pages/Mindful games/EmotionMatchingGame.jsx";
 import ProgressTracking from './pages/Progress Tracking/progress_tracking.jsx'
 import DoctorManagement from "./pages/Admin/DoctorsManagement.jsx";
+import MandalaColoring from "./pages/Mindful games/MandalaColoring.jsx";
+import BreathingGame from "./pages/Mindful games/breathingExcercise.jsx";
+import PaymentSuccessPage from "./pages/Remote Counselling/SucccessPage.jsx";
 // import MediaUpload from "./pages/Admin/upload.jsx";
 
 export default function App() {
@@ -170,7 +173,10 @@ export default function App() {
             <Route path = 'educational-game' element = {<EducationalGame/>}/>
             <Route path = 'memory-game' element = {<MindGames/>}/>
             <Route path = 'mindful-games/mood-management' element={<EmotionMatchingGame/>}/>
+            <Route path = 'mindful-games/breathing-exercise' element = {<BreathingGame/>}/>
+            <Route path = 'mindful-games/mandala-coloring' element = {<MandalaColoring/>}/>
             <Route path = 'mindful-games' element ={<GameSelection/>}/>
+            <Route path = 'payment/successful' element = {<PaymentSuccessPage/>}/>
 
             <Route path = "/progress_tracking" element = {<ProgressTracking/>}/>
 

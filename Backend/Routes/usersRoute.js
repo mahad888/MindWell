@@ -2,7 +2,7 @@ import express from 'express';
 
 import { updatePatient,deletePatient,getPatient,getAllPatients, searchPatient, sendFriendRequest, acceptFriendRequest, getMyNotifications, getAllFriends, getUserFriends, addRemoveFriend, getMyAppointments } from "../Controllers/PatientController.js";
 import { createAssessment,getAssessments,deleteAssessment } from '../Controllers/PatientController.js';
-import { updateDoctor,deleteDoctor,getDoctor,getAllDoctors, sendApprovalRequest, getDoctorAppointments, getAssessmentsOfPatient, getLast7DaysNegativePosts, getLast7DaysNegativeMessages } from "../Controllers/DoctorController.js";
+import { updateDoctor,deleteDoctor,getDoctor,getAllDoctors, sendApprovalRequest, getDoctorAppointments, getAssessmentsOfPatient, getLast7DaysNegativePosts, getLast7DaysNegativeMessages, getNegativeAndNeutralMessagesAfterDoctorsAppointment, getNegativeAndNeutralPostAfterDoctorsAppointment } from "../Controllers/DoctorController.js";
 import { authenticate, restrict } from '../Authentications/verifyToken.js';
 import { acceptRequestValidator, sendRequestValidator, validateHandler } from '../lib/validators.js';
 import { upload } from '../Middleware/multer.js';
@@ -33,6 +33,10 @@ router.get('/doctor/appointments',restrict(['doctor']), getDoctorAppointments);
 router.get('/doctor/patient/assessments/:id', getAssessmentsOfPatient);
 router.get('/doctor/patient/posts/:id',getLast7DaysNegativePosts)
 router.get('/doctor/patient/messages/:id',getLast7DaysNegativeMessages)
+router.get('/doctor/patient/messagesAfterAppointment/:id',getNegativeAndNeutralMessagesAfterDoctorsAppointment)
+router.get('/doctor/patient/postsAfterAppointment/:id',getNegativeAndNeutralPostAfterDoctorsAppointment)
+
+
 
 //ROUTER FOR ASSESSMENTS
 // Route to post assessments

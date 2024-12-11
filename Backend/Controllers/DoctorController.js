@@ -266,6 +266,93 @@ export const getLast7DaysNegativeMessages = async (req, res) => {
   }
 };
 
+export const getNegativeAndNeutralPostAfterDoctorsAppointment = async (req, res) => {
+  const { id } = req.params;
+console.log(id)
+  try {
+    // Find all appointments for the given doctor and patient
+    const appointments = await Booking.find({ doctor: req.userId, patient: id, appointmentStatus: 'completed' });
+    console.log(appointments)
+
+    if (!appointments || appointments.length === 0 || appointments == []) {
+      return res.status(404).json({ message: 'No appointments found' });
+
+    }
+
+    // Get the latest appointment
+    const latestAppointment = appointments[appointments.length - 1];
+
+    // Validate the latest appointment
+    if (!latestAppointment || !latestAppointment.updatedAt) {
+      return res.status(404).json({ message: 'No valid appointment data found' });
+    }
+
+    // Query posts for both negative and neutral types since the latest appointment
+    const posts = await Post.find({
+      userId: id,
+      postType: { $in: ['negative', 'neutral'] }, // Match negative or neutral post types
+      createdAt: { $gte: latestAppointment.updatedAt },
+    });
+
+    // Filter posts by type
+    const Negativeposts = posts.filter((post) => post.postType === 'negative');
+    const Neutralposts = posts.filter((post) => post.postType === 'neutral');
+
+    // Return counts and posts
+    return res.status(200).json({
+      negativeCount: Negativeposts.length,
+      neutralCount: Neutralposts.length,
+      Negativeposts,
+      Neutralposts,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export const getNegativeAndNeutralMessagesAfterDoctorsAppointment = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find all appointments for the given doctor and patient
+    const appointments = await Booking.find({ doctor: req.userId, patient: id ,appointmentStatus:'completed'});
+    console.log(appointments)
+
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ message: 'No appointments found' });
+    }
+
+    // Get the latest appointment
+    const latestAppointment = appointments[appointments.length - 1];
+
+    // Validate the latest appointment
+    if (!latestAppointment || !latestAppointment.updatedAt) {
+      return res.status(404).json({ message: 'No valid appointment data found' });
+    }
+
+    // Query messages for both negative and neutral types since the latest appointment
+    const messages = await Message.find({
+      sender: id,
+      messageType: { $in: ['negative', 'neutral'] }, // Match negative or neutral message types
+      createdAt: { $gte: latestAppointment.updatedAt },
+    });
+
+    // Filter messages by type
+    const NegativeMessages = messages.filter((message) => message.messageType === 'negative');
+    const NeutralMessages = messages.filter((message) => message.messageType === 'neutral');
+
+    // Return counts and messages
+    return res.status(200).json({
+      negativeCount: NegativeMessages.length,
+      neutralCount: NeutralMessages.length,
+      NegativeMessages,
+      NeutralMessages,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 
 export const getProgressTrackings = async (req, res) => {
   const {id} = req.params;

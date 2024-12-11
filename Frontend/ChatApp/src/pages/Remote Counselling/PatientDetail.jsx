@@ -31,6 +31,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import FullPageBarGraph from "./FullPageChart";
 
 const PatientDetail = () => {
   const { id,appointmentId } = useParams();
@@ -42,6 +43,11 @@ const PatientDetail = () => {
   const [neutralMessagesCount, setNeutralMessagesCount] = useState(0);
   const [negativePostsCount, setNegativePostsCount] = useState(0);
   const [neutralPostsCount, setNeutralPostsCount] = useState(0);
+  const [neutralPostsAfterAppointment, setNeutralPostsAfterAppointment] = useState(0);
+  const [negativePostsAfterAppointment, setNegativePostsAfterAppointment] = useState(0);
+  const [neutralMessagesAfterAppointment, setNeutralMessagesAfterAppointment] = useState(0);
+  const [negativeMessagesAfterAppointment, setNegativeMessagesAfterAppointment] = useState(0);
+
   const navigate = useNavigate();
   const appointments = useSelector((state) => state.auth.appointments);
   let appointment = appointments.find((appointment) => appointment._id === appointmentId);
@@ -124,14 +130,45 @@ const PatientDetail = () => {
           }
         );
 
+        const postsAfterAppointment = await axios.get(
+          `http://localhost:5000/api/doctor/patient/postsAfterAppointment/${id}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        const messagesAfterAppointment = await axios.get(
+          `http://localhost:5000/api/doctor/patient/messagesAfterAppointment/${id}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+
         setReports(data.assessment.reverse());
         setNegativeMessagesCount(messages.data.negativeMessages);
         setNeutralMessagesCount(messages.data.neutralMessages);
         setNegativePostsCount(posts.data.negativePosts);
         setNeutralPostsCount(posts.data.neutralPosts);
+        setNegativePostsAfterAppointment(postsAfterAppointment.data.negativeCount);
+        setNeutralPostsAfterAppointment(postsAfterAppointment.data.neutralCount);
+        console.log(postsAfterAppointment.data.negativeCount);
+        setNegativeMessagesAfterAppointment(messagesAfterAppointment.data.negativeCount);
+        setNeutralMessagesAfterAppointment(messagesAfterAppointment.data.neutralCount);
+
       } catch (err) {
-        console.error(err);
-        setError("Error fetching data.");
+        // Check for HTTP status code
+        if (err.response && err.response.status === 404) {
+          setError(err.response.data.message || "No appointments found.");
+        } else {
+          setError("Error fetching data.");
+        }
       } finally {
         setLoading(false);
       }
@@ -154,7 +191,7 @@ const PatientDetail = () => {
     );
   }
 
-  if (error) {
+  if (error==='Error fetching data.') {
     return (
       <DoctorLayout>
         <Stack
@@ -345,7 +382,17 @@ const PatientDetail = () => {
             </ResponsiveContainer>
           </Grid>
         </Grid>
+        {error==='No appointments found'?'':
+        <Box display={'flex'} justifyItems={'center'} mr={10} sx={{width:"80rem"}}>
+        <FullPageBarGraph  negativeMessagesAfterAppointment={negativeMessagesAfterAppointment} neutralMessagesAfterAppointment={neutralMessagesAfterAppointment} negativePostsAfterAppointment={negativePostsAfterAppointment} neutralPostsAfterAppointment={neutralPostsAfterAppointment}/>
+        </Box>
+}
+
+        
+
       </Stack>
+
+      
     </DoctorLayout>
   );
 };

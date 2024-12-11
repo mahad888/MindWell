@@ -214,7 +214,7 @@ const surveyResponses = questions.map(q => {
           >
             <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
               <Typography variant="h3" component="h1" align="center" gutterBottom>
-                Mental Health Screening Survey
+                Mental Health Assessment
               </Typography>
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>

@@ -138,6 +138,9 @@ const DoctorBookingCard = ({ doctor }) => {
                 size="large"
                 disabled={!slot.available}
                 onClick={() => setSelectedSlot(slot)}
+                sx={{
+                  width: 120, // Set a fixed width
+                }}
               >
                 {slot.available
                   ? selectedSlot === slot
@@ -163,14 +166,14 @@ const DoctorBookingCard = ({ doctor }) => {
           >
             {loading ? <CircularProgress size={24} /> : "Book Appointment"}
           </Button>
-          <Button
+          {/* <Button
             variant="outlined"
             color="secondary"
             fullWidth
             onClick={handleVideoCalling}
           >
             Start Video Call
-          </Button>
+          </Button> */}
         </Stack>
       </CardContent>
 

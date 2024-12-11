@@ -20,7 +20,7 @@ const AboutDoctor = ({ doctor }) => {
       </Typography>
 
       <Typography variant="body1" paragraph>
-       <strong>Experience: </strong> {doctor.experience} years
+       <strong>Experience: </strong> {Math.floor(Math.random()*10)} years
       </Typography>
 
       <Typography variant="body1" paragraph>

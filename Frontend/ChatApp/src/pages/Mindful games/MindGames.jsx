@@ -1,12 +1,15 @@
 // src/components/Games.js
 import React, { useState } from 'react';
-import { Box, Tab, Tabs, Typography, Container } from '@mui/material';
+import { Box, Tab, Tabs, Typography, Container,IconButton } from '@mui/material';
 import MemoryGame from './MemoryGames';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StressBall from './StressBall';
 import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
+import { useNavigate } from 'react-router-dom';
 
 const MindGames = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const navigate = useNavigate();
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -18,6 +21,11 @@ const MindGames = () => {
       <Typography variant="h2" align="center" gutterBottom>
         Stress Management Mini-Games
       </Typography>
+      <Box width="100%" display="flex" justifyContent="flex-start" mb={2}>
+              <IconButton onClick={() => navigate(-1)} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+            </Box>
       <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={activeTab}

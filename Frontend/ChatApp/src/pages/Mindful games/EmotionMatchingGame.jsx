@@ -7,20 +7,19 @@ import {
   Grid,
   CircularProgress,
   Snackbar,
+  IconButton,
+  Box
 } from '@mui/material';
 import { Alert } from '@mui/material';
 import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
+import emotionData from './emotions';
 
-const emotions = [
-  { image: 'https://images.unsplash.com/photo-1628371637455-ce798906f974?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8aGFwcHl8ZW58MHx8MHx8fDA%3D', label: 'Happy' },
-  { image: 'https://images.unsplash.com/photo-1617859822391-9c4bc92ff4f4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzl8fHNhZHxlbnwwfHwwfHx8MA%3D%3D', label: 'Sad' },
-  { image: 'https://media.istockphoto.com/id/1387633760/photo/studio-portrait-photo-of-young-asian-woman-with-anger-face-expression-on-white-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=2YKD_IDH-60IXtPJrG5oXVggAPfwnrt_McmjUmrZd6U=', label: 'Angry' },
-  { image: 'https://images.unsplash.com/photo-1644587590691-e630fe71f133?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3VwcmlzZWR8ZW58MHx8MHx8fDA%3D', label: 'Surprised' },
-  { image: 'https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmV1dHJhbCUyMGZhY2V8ZW58MHx8MHx8fDA%3D', label: 'Neutral' },
-];
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Import the back icon
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const EmotionMatchingGame = () => {
-  const [currentEmotion, setCurrentEmotion] = useState(emotions[0]);
+  const [currentEmotion, setCurrentEmotion] = useState(emotionData[0]);
   const [score, setScore] = useState(0);
   const [message, setMessage] = useState('');
   const [timer, setTimer] = useState(10);
@@ -28,6 +27,10 @@ const EmotionMatchingGame = () => {
   const [difficulty, setDifficulty] = useState('Easy');
   const [progress, setProgress] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const navigate = useNavigate(); // Initialize the useNavigate hook
+
+
+  const displayedEmotions = emotionData.slice(0, 5); // Only show the first 5 emotions
 
   useEffect(() => {
     if (timer > 0 && !gameOver) {
@@ -60,7 +63,7 @@ const EmotionMatchingGame = () => {
     }
 
     // Load next emotion
-    const nextEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+    const nextEmotion = emotionData[Math.floor(Math.random() * emotionData.length)];
     setCurrentEmotion(nextEmotion);
 
     // Adjust timer based on difficulty
@@ -74,7 +77,7 @@ const EmotionMatchingGame = () => {
     setProgress(0);
     setGameOver(false);
     setMessage('');
-    setCurrentEmotion(emotions[0]);
+    setCurrentEmotion(emotionData[0]);
   };
 
   return (
@@ -83,6 +86,12 @@ const EmotionMatchingGame = () => {
         <Typography variant="h4" gutterBottom>
           Emotion Matching Game
         </Typography>
+        <Box width="100%" display="flex" justifyContent="flex-start" mb={2}>
+              <IconButton onClick={() => navigate(-1)} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+            </Box>
+
         <Typography variant="h6" gutterBottom>
           Difficulty: {difficulty}
         </Typography>
@@ -95,13 +104,13 @@ const EmotionMatchingGame = () => {
           />
         </Card>
         <Grid container spacing={2} justifyContent="center">
-          {emotions.map((emotion) => (
+          {displayedEmotions.map((emotion) => (
             <Grid item key={emotion.label}>
               <Button
                 variant="contained"
                 color="secondary"
                 onClick={() => handleAnswer(emotion.label)}
-                style={{ width: '120px' }}
+                style={{ width: '150px' }}
                 disabled={gameOver}
               >
                 {emotion.label}

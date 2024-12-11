@@ -6,23 +6,23 @@ import {
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import MindWellAppLayout from '../../components/Layout/MindWellApplayout';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Import the back icon
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { randomQuestions } from './questions';
 
 // Sample questions with additional features
-const questions = [...randomQuestions]
+const questions = [...randomQuestions];
 
 const EducationalGame = () => {
+  const navigate = useNavigate(); // Initialize the useNavigate hook
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [timer, setTimer] = useState(15);
+  const [timer, setTimer] = useState(30);
   const [hintUsed, setHintUsed] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [questions, setQuestions] = useState(randomQuestions);
-
-
 
   useEffect(() => {
     if (timer > 0 && !showFeedback) {
@@ -79,98 +79,105 @@ const EducationalGame = () => {
 
   return (
     <MindWellAppLayout>
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-      sx={{ backgroundColor: '#f0f0f0', padding: 2 }}
-    >
-      <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, maxWidth: 800, width: '100%' }}>
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <Avatar sx={{ bgcolor: 'primary', width: 56, height: 56, marginBottom: 2 }}>
-            <EmojiEventsIcon />
-          </Avatar>
-          <Typography variant="h4" component="div" gutterBottom>
-            Mental Health Educational Game
-          </Typography>
-
-          <LinearProgress
-            variant="determinate"
-            value={((currentQuestionIndex + 1) / questions.length) * 100}
-            sx={{ width: '100%', mb: 2 }}
-            color='primary'
-          />
-
-          <Box display="flex" alignItems="center" width="100%" mb={2}>
-            <Typography variant="h6" component="div" flexGrow={1}>
-              {questions[currentQuestionIndex]?.question}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Time left: {timer} seconds
-            </Typography>
-          </Box>
-
-          <Grid container spacing={2} marginBottom={2}>
-            {questions[currentQuestionIndex].options.map((option, index) => (
-              <Grid item xs={6} key={index}>
-                <Button
-                  variant={selectedOption === index ? 'contained' : 'outlined'}
-                  onClick={() => handleOptionSelect(index)}
-                  fullWidth
-                >
-                  {option}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-
-          <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-            <Tooltip title={hintUsed ? 'Hint used' : 'Use a hint (score reduction)'}>
-              <IconButton onClick={handleHint} disabled={hintUsed}>
-                <HelpOutlineIcon color={hintUsed ? 'disabled' : 'primary'} />
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        sx={{ backgroundColor: '#f0f0f0', padding: 2 }}
+      >
+        <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, maxWidth: 800, width: '100%' }}>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            {/* Back Button */}
+            <Box width="100%" display="flex" justifyContent="flex-start" mb={2}>
+              <IconButton onClick={() => navigate(-1)} color="primary">
+                <ArrowBackIcon />
               </IconButton>
-            </Tooltip>
+            </Box>
 
-            <Button
-              variant="contained"
-              onClick={showFeedback ? handleNextQuestion : handleSubmitAnswer}
-              fullWidth
-              color={showFeedback ? 'primary' : 'secondary'}
-            >
-              {showFeedback ? 'Next Question' : 'Submit Answer'}
-            </Button>
-          </Box>
+            <Avatar sx={{ bgcolor: 'primary', width: 56, height: 56, marginBottom: 2 }}>
+              <EmojiEventsIcon />
+            </Avatar>
+            <Typography variant="h4" component="div" gutterBottom>
+              Mental Health Educational Game
+            </Typography>
 
-          {loading && <CircularProgress sx={{ marginTop: 2 }} />}
+            <LinearProgress
+              variant="determinate"
+              value={((currentQuestionIndex + 1) / questions.length) * 100}
+              sx={{ width: '100%', mb: 2 }}
+              color="primary"
+            />
 
-          {showFeedback && (
-            <Box mt={2}>
-              <Typography
-                variant="body1"
-                color={selectedOption === questions[currentQuestionIndex].answer ? 'success.main' : 'error.main'}
-                gutterBottom
-              >
-                {selectedOption === questions[currentQuestionIndex].answer ? 'Correct!' : 'Incorrect!'}{' '}
-                {questions[currentQuestionIndex].explanation}
+            <Box display="flex" alignItems="center" width="100%" mb={2}>
+              <Typography variant="h6" component="div" flexGrow={1}>
+                {questions[currentQuestionIndex]?.question}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Time left: {timer} seconds
               </Typography>
             </Box>
-          )}
-        </Box>
-      </Paper>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={hintUsed ? 'warning' : 'info'} sx={{ width: '100%' }}>
-          {hintUsed ? questions[currentQuestionIndex].hint : 'Hint used! Score will be reduced.'}
-        </Alert>
-      </Snackbar>
-    </Box>
+            <Grid container spacing={2} marginBottom={2}>
+              {questions[currentQuestionIndex].options.map((option, index) => (
+                <Grid item xs={6} key={index}>
+                  <Button
+                    variant={selectedOption === index ? 'contained' : 'outlined'}
+                    onClick={() => handleOptionSelect(index)}
+                    fullWidth
+                  >
+                    {option}
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
+
+            <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+              <Tooltip title={hintUsed ? 'Hint used' : 'Use a hint (score reduction)'}>
+                <IconButton onClick={handleHint} disabled={hintUsed}>
+                  <HelpOutlineIcon color={hintUsed ? 'disabled' : 'primary'} />
+                </IconButton>
+              </Tooltip>
+
+              <Button
+                variant="contained"
+                onClick={showFeedback ? handleNextQuestion : handleSubmitAnswer}
+                fullWidth
+                color={showFeedback ? 'primary' : 'secondary'}
+              >
+                {showFeedback ? 'Next Question' : 'Submit Answer'}
+              </Button>
+            </Box>
+
+            {loading && <CircularProgress sx={{ marginTop: 2 }} />}
+
+            {showFeedback && (
+              <Box mt={2}>
+                <Typography
+                  variant="body1"
+                  color={selectedOption === questions[currentQuestionIndex].answer ? 'success.main' : 'error.main'}
+                  gutterBottom
+                >
+                  {selectedOption === questions[currentQuestionIndex].answer ? 'Correct!' : 'Incorrect!'}{' '}
+                  {questions[currentQuestionIndex].explanation}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </Paper>
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={handleCloseSnackbar} severity={hintUsed ? 'warning' : 'info'} sx={{ width: '100%' }}>
+            {hintUsed ? questions[currentQuestionIndex].hint : 'Hint used! Score will be reduced.'}
+          </Alert>
+        </Snackbar>
+      </Box>
     </MindWellAppLayout>
   );
 };
