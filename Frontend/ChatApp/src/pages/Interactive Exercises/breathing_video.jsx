@@ -15,13 +15,14 @@ import {
 } from '@mui/icons-material';
 import { storeMindVideo } from '../../Redux/reducers/action';
 
-const VideoPlayer = ({ videoSrc, darkMode }) => {
+const VideoPlayer = ({ videoSrc, darkMode,toggleCameraVisibility }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
 
   const togglePlayPause = () => {
+    toggleCameraVisibility();
     if (isPlaying) {
       videoRef.current.pause();
     } else {
@@ -164,6 +165,7 @@ const BreathingVideo = () => {
     if (!isCameraVisible) {
       setIsCameraVisible(true);
       initializeCamera();
+      startDetection();
     } else {
       stopDetection();
       setIsCameraVisible(false);
@@ -388,13 +390,14 @@ dispatch(storeMindVideo (mindVideo));
                         <VideoPlayer 
                           videoSrc={style.videoSrc}
                           darkMode={darkMode}
+                          toggleCameraVisibility={toggleCameraVisibility}
                         />
                       </Collapse>
                     </Card>
                   ))}
                 </Grid>
                 <Grid item xs={4}>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     fullWidth
@@ -402,7 +405,7 @@ dispatch(storeMindVideo (mindVideo));
                     sx={{ mb: 2 }}
                   >
                     {isCameraVisible ? "Hide Camera" : "Show Camera"}
-                  </Button>
+                  </Button> */}
                   {isCameraVisible && (
 
 

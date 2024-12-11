@@ -17,13 +17,14 @@ import { styled } from '@mui/system';
 import { storeMindAudio } from '../../Redux/reducers/action';
 import axios from 'axios';
 
-const AudioPlayer = ({ audioSrc, darkMode }) => {
+const AudioPlayer = ({ audioSrc, darkMode ,toggleCameraVisibility}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
 
   const togglePlayPause = () => {
+    toggleCameraVisibility();
     if (isPlaying) {
       audioRef.current.pause();
     } else {
@@ -165,6 +166,7 @@ const MindfulnessAudio = () => {
     if (!isCameraVisible) {
       setIsCameraVisible(true);
       initializeCamera();
+      startDetection();
     } else {
       stopDetection();
       setIsCameraVisible(false);
@@ -264,11 +266,9 @@ const MindfulnessAudio = () => {
       const response=await axios.post(
         'http://localhost:5000/api/storeData',
         {
-          // prompts: [], // Empty array since we're not storing prompts
-          // mindfulVideo: { type: '', allEmotions: [] },
+
           mindfulAudio: emotions, // This will contain the current session's emotions
-          // breathVideo: { type: '', allEmotions: [] },
-          // breathAudio: { type: '', allEmotions: [] }
+
         },
         {
           withCredentials: true,
@@ -388,13 +388,14 @@ const MindfulnessAudio = () => {
                         <AudioPlayer 
                           audioSrc={style.audioSrc}
                           darkMode={darkMode}
+                          toggleCameraVisibility={toggleCameraVisibility}
                         />
                       </Collapse>
                     </Card>
                   ))}
                 </Grid>
                 <Grid item xs={4}>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     fullWidth
@@ -402,7 +403,7 @@ const MindfulnessAudio = () => {
                     sx={{ mb: 2 }}
                   >
                     {isCameraVisible ? "Hide Camera" : "Show Camera"}
-                  </Button>
+                  </Button> */}
                   {isCameraVisible && (
                     <Box sx={{ position: 'relative' }}>
                       <Box component="video" ref={videoRef} sx={{ width: '100%', borderRadius: 2 }} />
@@ -507,3 +508,278 @@ const MindfulnessAudio = () => {
 };
 
 export default MindfulnessAudio;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useRef, useEffect } from 'react';
+// import { useDispatch } from 'react-redux';
+// import * as faceapi from 'face-api.js';
+// import { 
+//   ThemeProvider, createTheme, 
+//   CssBaseline, AppBar, Toolbar, Typography, 
+//   IconButton, Box, Container, Grid, Paper, 
+//   Button, Card, CardContent, CardMedia, 
+//   List, ListItem, ListItemText, Collapse,CircularProgress
+// } from '@mui/material';
+// import { 
+//   Notifications, AccountCircle, WbSunny, NightsStay,
+//   ExpandMore, ExpandLess, PlayArrow, Pause
+// } from '@mui/icons-material';
+// import { styled } from '@mui/system';
+// import { storeMindAudio } from '../../Redux/reducers/action';
+// import axios from 'axios';
+
+// const AudioPlayer = ({ audioSrc, darkMode, onPlay, onPause, isPlaying }) => {
+//   const [currentTime, setCurrentTime] = useState(0);
+//   const [duration, setDuration] = useState(0);
+//   const audioRef = useRef(null);
+
+//   const togglePlayPause = () => {
+//     if (isPlaying) {
+//       audioRef.current.pause();
+//       onPause();
+//     } else {
+//       audioRef.current.play();
+//       onPlay();
+//     }
+//   };
+
+//   const handleTimeUpdate = () => {
+//     setCurrentTime(audioRef.current.currentTime);
+//   };
+
+//   const handleLoadedMetadata = () => {
+//     setDuration(audioRef.current.duration);
+//   };
+
+//   const handleSeek = (event, newValue) => {
+//     audioRef.current.currentTime = newValue;
+//     setCurrentTime(newValue);
+//   };
+
+//   const formatTime = (time) => {
+//     const minutes = Math.floor(time / 60);
+//     const seconds = Math.floor(time % 60);
+//     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+//   };
+
+//   return (
+//     <Box sx={{ mt: 2, p: 2, borderRadius: 2, bgcolor: darkMode ? 'grey.800' : 'grey.200' }}>
+//       <audio 
+//         ref={audioRef}
+//         src={audioSrc}
+//         onTimeUpdate={handleTimeUpdate}
+//         onLoadedMetadata={handleLoadedMetadata}
+//       />
+//       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+//         <IconButton onClick={togglePlayPause} color={darkMode ? 'primary' : 'default'}>
+//           {isPlaying ? <Pause fontSize="large" /> : <PlayArrow fontSize="large" />}
+//         </IconButton>
+//       </Box>
+//       <Slider
+//         value={currentTime}
+//         max={duration}
+//         onChange={handleSeek}
+//         aria-labelledby="continuous-slider"
+//       />
+//       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+//         <Typography variant="caption" color={darkMode ? 'text.secondary' : 'text.primary'}>
+//           {formatTime(currentTime)}
+//         </Typography>
+//         <Typography variant="caption" color={darkMode ? 'text.secondary' : 'text.primary'}>
+//           {formatTime(duration)}
+//         </Typography>
+//       </Box>
+//     </Box>
+//   );
+// };
+
+// const MindfulnessAudio = () => {
+//   const [darkMode, setDarkMode] = useState(false);
+//   const [expandedStyle, setExpandedStyle] = useState(null);
+//   const [emotions, setEmotions] = useState([]);
+//   const [isCameraVisible, setIsCameraVisible] = useState(false);
+//   const [currentEmotion, setCurrentEmotion] = useState('');
+//   const [isCameraReady, setIsCameraReady] = useState(false);
+//   const [emotionHistory, setEmotionHistory] = useState([]);
+//   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+//   const videoRef = useRef();
+//   const canvasRef = useRef();
+//   const detectionRef = useRef(null);
+//   const emotionCounterRef = useRef({});
+//   const startTimeRef = useRef(null);
+//   const dispatch = useDispatch();
+
+//   const emotionEmojis = {
+//     neutral: '😐', happy: '😊', sad: '😢', angry: '😠',
+//     fearful: '😨', disgusted: '🤢', surprised: '😲',
+//   };
+
+//   const theme = createTheme({
+//     palette: {
+//       mode: darkMode ? 'dark' : 'light',
+//     },
+//   });
+
+//   useEffect(() => {
+//     const loadModels = async () => {
+//       try {
+//         await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+//         await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+//         console.log('Models loaded successfully');
+//       } catch (error) {
+//         console.error('Error loading models:', error);
+//       }
+//     };
+
+//     loadModels();
+
+//     return () => {
+//       stopDetection();
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     if (isCameraReady && isAudioPlaying) {
+//       startDetection();
+//     } else {
+//       stopDetection();
+//     }
+//   }, [isCameraReady, isAudioPlaying]);
+
+//   const toggleDarkMode = () => setDarkMode(!darkMode);
+
+//   const toggleExpand = (style) => {
+//     setExpandedStyle(expandedStyle === style ? null : style);
+//   };
+
+//   const yogaStyles = [
+//     { name: 'Guided Meditation', audioSrc: '/audios/mindfulness-meditation-1.mp3' },
+//     { name: 'Meditation', audioSrc: '/audios/mindfulness-meditation-2.mp3' },
+//   ];
+
+//   const initializeCamera = async () => {
+//     try {
+//       const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+//       if (videoRef.current) {
+//         videoRef.current.srcObject = stream;
+//         videoRef.current.onloadedmetadata = () => {
+//           videoRef.current.play();
+//           setIsCameraReady(true);
+//         };
+//       }
+//     } catch (error) {
+//       console.error("Error accessing the camera:", error);
+//       alert("Failed to access the camera. Please ensure you have given permission.");
+//     }
+//   };
+
+//   const handleAudioPlay = () => {
+//     setIsAudioPlaying(true);
+//     initializeCamera();
+//     setIsCameraVisible(true);
+//   };
+
+//   const handleAudioPause = () => {
+//     setIsAudioPlaying(false);
+//     stopDetection();
+//     setIsCameraVisible(false);
+//     setIsCameraReady(false);
+//     if (videoRef.current && videoRef.current.srcObject) {
+//       const tracks = videoRef.current.srcObject.getTracks();
+//       tracks.forEach(track => track.stop());
+//     }
+//   };
+
+//   // ... (rest of the methods remain the same as in the previous implementation)
+
+//   return (
+//     <ThemeProvider theme={theme}>
+//       <CssBaseline />
+//       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+//         <Container maxWidth="lg">
+//           {/* ... (previous AppBar and other content remains the same) ... */}
+
+//           <Grid container spacing={3} sx={{ mt: 3 }}>
+//             <Grid item xs={12} md={8}>
+//               {/* ... (previous content remains the same) ... */}
+
+//               <Grid container spacing={2} sx={{ mt: 3 }}>
+//                 <Grid item xs={8}>
+//                   {yogaStyles.map((style, index) => (
+//                     <Card key={index} sx={{ mb: 2 }}>
+//                       <CardContent>
+//                         {/* ... (previous content remains the same) ... */}
+//                       </CardContent>
+//                       <Collapse in={expandedStyle === style.name}>
+//                         <AudioPlayer 
+//                           audioSrc={style.audioSrc}
+//                           darkMode={darkMode}
+//                           onPlay={handleAudioPlay}
+//                           onPause={handleAudioPause}
+//                           isPlaying={isAudioPlaying}
+//                         />
+//                       </Collapse>
+//                     </Card>
+//                   ))}
+//                 </Grid>
+//                 <Grid item xs={4}>
+//                   {isCameraVisible && (
+//                     <Box sx={{ position: 'relative' }}>
+//                       <Box component="video" ref={videoRef} sx={{ width: '100%', borderRadius: 2 }} />
+//                       <Box component="canvas" ref={canvasRef} sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+//                       {currentEmotion && (
+//                         <Box sx={{ mt: 2, textAlign: 'center' }}>
+//                           <Typography variant="h6" fontWeight="bold">
+//                             Current Emotion: <span>{getEmoji(currentEmotion)} {currentEmotion}</span>
+//                           </Typography>
+//                         </Box>
+//                       )}
+//                       <Box sx={{ mt: 2 }}>
+//                         <Typography variant="h6" fontWeight="bold">Emotion History:</Typography>
+//                         <List>
+//                           {emotionHistory.map((emotion, index) => (
+//                             <ListItem key={index}>
+//                               <ListItemText primary={`${getEmoji(emotion)} ${emotion}`} />
+//                             </ListItem>
+//                           ))}
+//                         </List>
+//                       </Box>
+//                     </Box>
+//                   )}
+//                 </Grid>
+//               </Grid>
+//             </Grid>
+
+//             {/* ... (remaining content stays the same) ... */}
+//           </Grid>
+//         </Container>
+//       </Box>
+//     </ThemeProvider>
+//   );
+// };
+
+// export default MindfulnessAudio;
+
+

@@ -18,13 +18,14 @@ import { storeMindAudio } from '../../Redux/reducers/action';
 import axios from 'axios';
 
 
-const AudioPlayer = ({ audioSrc, darkMode }) => {
+const AudioPlayer = ({ audioSrc, darkMode, toggleCameraVisibility }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
 
   const togglePlayPause = () => {
+    toggleCameraVisibility();
     if (isPlaying) {
       audioRef.current.pause();
     } else {
@@ -166,6 +167,7 @@ const BreathingAudio = () => {
     if (!isCameraVisible) {
       setIsCameraVisible(true);
       initializeCamera();
+      startDetection();
     } else {
       stopDetection();
       setIsCameraVisible(false);
@@ -264,10 +266,7 @@ const BreathingAudio = () => {
       const response=await axios.post(
         'http://localhost:5000/api/storeData',
         {
-          // prompts: [], // Empty array since we're not storing prompts
-          // mindfulVideo: { type: '', allEmotions: [] },
-          // mindfulAudio: { type: '', allEmotions: [] }, // This will contain the current session's emotions
-          // breathVideo: { type: '', allEmotions: [] },
+          
           breathAudio: emotions,
         },
         {
@@ -389,13 +388,14 @@ const BreathingAudio = () => {
                         <AudioPlayer 
                           audioSrc={style.audioSrc}
                           darkMode={darkMode}
+                          toggleCameraVisibility={toggleCameraVisibility}
                         />
                       </Collapse>
                     </Card>
                   ))}
                 </Grid>
                 <Grid item xs={4}>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     fullWidth
@@ -403,7 +403,7 @@ const BreathingAudio = () => {
                     sx={{ mb: 2 }}
                   >
                     {isCameraVisible ? "Hide Camera" : "Show Camera"}
-                  </Button>
+                  </Button> */}
                   {isCameraVisible && (
                     <Box sx={{ position: 'relative' }}>
                       <Box component="video" ref={videoRef} sx={{ width: '100%', borderRadius: 2 }} />

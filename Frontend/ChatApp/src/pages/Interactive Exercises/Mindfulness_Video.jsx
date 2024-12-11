@@ -16,13 +16,14 @@ import {
 import { storeMindVideo } from '../../Redux/reducers/action';
 import axios from 'axios';
 
-const VideoPlayer = ({ videoSrc, darkMode }) => {
+const VideoPlayer = ({ videoSrc, darkMode,toggleCameraVisibility }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
 
   const togglePlayPause = () => {
+    toggleCameraVisibility();
     if (isPlaying) {
       videoRef.current.pause();
     } else {
@@ -165,6 +166,7 @@ const MindfulnessVideo = () => {
     if (!isCameraVisible) {
       setIsCameraVisible(true);
       initializeCamera();
+      startDetection();
     } else {
       stopDetection();
       setIsCameraVisible(false);
@@ -391,13 +393,14 @@ const MindfulnessVideo = () => {
                         <VideoPlayer 
                           videoSrc={style.videoSrc}
                           darkMode={darkMode}
+                          toggleCameraVisibility={toggleCameraVisibility}
                         />
                       </Collapse>
                     </Card>
                   ))}
                 </Grid>
                 <Grid item xs={4}>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     fullWidth
@@ -405,7 +408,7 @@ const MindfulnessVideo = () => {
                     sx={{ mb: 2 }}
                   >
                     {isCameraVisible ? "Hide Camera" : "Show Camera"}
-                  </Button>
+                  </Button> */}
                   {isCameraVisible && (
 
 
