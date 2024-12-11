@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowBack, Send, AutoAwesome, Lock, Check, Home } from '@mui/icons-material';
-
+import { useNavigate } from "react-router-dom";
 import { 
   AppBar, 
   Toolbar, 
@@ -42,6 +42,7 @@ const JournalingPromptsPage = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate=useNavigate();
   
   const { mindVideo, mindAudio, breathingVideo, breathingAudio } = useSelector(state => state.data);
 
@@ -124,9 +125,13 @@ const JournalingPromptsPage = () => {
     <Box sx={{ minHeight: '100vh', bgcolor: '#e0f2f1' }}>
       <AppBar position="sticky" color="transparent" elevation={0} sx={{ backdropFilter: 'blur(10px)' }}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="back">
-            <ArrowBack />
-          </IconButton>
+        <IconButton 
+        edge="start" 
+        color="inherit" 
+        onClick={() => navigate(-1)} // Navigate to the previous page
+      >
+        <ArrowBack />
+      </IconButton>
           <GradientTypography variant="h4" component="h1" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
             Mindful Journey
           </GradientTypography>

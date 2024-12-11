@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import * as faceapi from 'face-api.js';
+import { useNavigate } from "react-router-dom";
+
 import { 
   ThemeProvider, createTheme, 
   CssBaseline, AppBar, Toolbar, Typography, 
@@ -11,7 +13,7 @@ import {
 } from '@mui/material';
 import { 
   Notifications, AccountCircle, WbSunny, NightsStay,
-  ExpandMore, ExpandLess, PlayArrow, Pause
+  ExpandMore, ExpandLess, PlayArrow, Pause,ArrowBack
 } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { storeMindAudio } from '../../Redux/reducers/action';
@@ -98,6 +100,7 @@ const BreathingAudio = () => {
   const emotionCounterRef = useRef({});
   const startTimeRef = useRef(null);
   const dispatch = useDispatch();
+  const navigate=useNavigate();
 
   const emotionEmojis = {
     neutral: '😐', happy: '😊', sad: '😢', angry: '😠',
@@ -295,6 +298,16 @@ const BreathingAudio = () => {
           <AppBar position="static" color="transparent" elevation={0}>
             <Toolbar>
               <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+
+
+              <IconButton 
+        edge="start" 
+        color="inherit" 
+        onClick={() => navigate(-1)} // Navigate to the previous page
+      >
+        <ArrowBack />
+      </IconButton>
+
                 <img src="/images/Mindwell-black.png" alt="Mindwell Logo" style={{ width: 56, height: 56, marginRight: 8 }} />
                 <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
                   Mindwell

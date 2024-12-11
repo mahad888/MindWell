@@ -14,7 +14,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { People as UsersIcon, Air as WindIcon, MenuBook as BookOpenIcon, Menu as MenuIcon } from '@mui/icons-material';
+import { People as UsersIcon, Air as WindIcon, MenuBook as BookOpenIcon, Menu as MenuIcon ,ArrowBack} from '@mui/icons-material';
 
 const theme = createTheme({
   palette: {
@@ -37,6 +37,7 @@ const MindwellHomeScreen = () => {
   const [hoveredOption, setHoveredOption] = useState(null);
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
 
   const options = [
     { title: 'Mindfulness Meditation', icon: UsersIcon, color: 'linear-gradient(to bottom right, #fecdd3, #fda4af)', description: 'Cultivate awareness and live in the present moment', path: '/mindfulness_meditation' },
@@ -55,9 +56,20 @@ const MindwellHomeScreen = () => {
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #fef3c7, #fed7aa)' }}>
         <AppBar position="static" color="transparent" elevation={0} sx={{ py: 1 }}>
+
+        
+
           <Container maxWidth="lg">
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+
+              <IconButton 
+        edge="start" 
+        color="inherit" 
+        onClick={() => navigate(-1)} // Navigate to the previous page
+      >
+        <ArrowBack />
+      </IconButton>
                 <Box sx={{ width: 32, height: 32, borderRadius: '50%', bgcolor: 'primary.main' }} />
                 <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'primary.dark' }}>
                   Mindwell

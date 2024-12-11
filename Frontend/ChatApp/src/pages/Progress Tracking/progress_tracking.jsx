@@ -690,7 +690,7 @@ const EmotionComparisonChart = ({ sessions }) => {
 
   // Predefined list of emotions to track
   const emotionTypes = ['happy', 'sad', 'neutral', 'excited', 'calm', 'anxious', 'angry', 'surprised'];
-
+const navigate=useNavigate();
   // Function to calculate emotion percentages
   const calculateEmotionPercentages = (session) => {
     const allEmotions = [
@@ -734,6 +734,7 @@ const EmotionComparisonChart = ({ sessions }) => {
 
   return (
     <Card sx={{ boxShadow: 3, mt: 3 }}>
+    
       <CardContent>
         <Typography variant="h6" gutterBottom>
           Emotion Progression Comparison
